@@ -7,6 +7,11 @@ services:
     build:
       context: .
       dockerfile: QuizApp.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__QuizAppConnection=${DB_CONNECTION}
+      - JwtSettings__Secret=${JWT_SECRET}
+      - AzureBlobStorage__ConnectionString=${AZURE_BLOB_CONNECTION}
     ports:
       - 5000:8080
       - 5001:8081

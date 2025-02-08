@@ -401,3 +401,7 @@ FodyWeavers.xsd
 
 .env
 src/.containers
+# Ignore environment-specific appsettings
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json.user

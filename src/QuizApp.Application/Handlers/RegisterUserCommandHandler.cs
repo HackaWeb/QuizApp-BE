@@ -12,7 +12,7 @@ public class RegisterUserCommandHandler(UserManager<User> userManager) : IReques
     {
         var user = new User
         {
-            UserName = request.Username,
+            UserName = request.Email,
             Email = request.Email,
         };
 

@@ -13,14 +13,12 @@ public static class DependecyInjection
 {
     public static IServiceCollection AddDatabaseContext(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("QuizAppConnection");
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION")
+            ?? configuration.GetConnectionString("QuizAppConnection");
 
         services.AddDbContext<QuizAppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IUnitOfWork, QuizAppDbContext>();
         services.AddScoped<IBlobStorageRepository, BlobStorageRepository>();
-
-        services.AddIdentityCore<User>()
-            .AddEntityFrameworkStores<QuizAppDbContext>();
 
         return services;
     }
