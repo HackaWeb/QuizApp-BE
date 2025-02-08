@@ -4,15 +4,13 @@ using QuizApp.Domain.Models;
 
 namespace QuizApp.DataContext.EntityTypeConfiguration;
 
-public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
+public class FeedbackConfiguration : IEntityTypeConfiguration<Feedback>
 {
-    public void Configure(EntityTypeBuilder<Quiz> builder)
+    public void Configure(EntityTypeBuilder<Feedback> builder)
     {
-        builder.HasKey(q => q.Id);
+        builder.HasKey(f => f.Id);
 
-        builder.Property(q => q.Title).IsRequired();
-        builder.Property(q => q.ImageUrl).IsRequired();
-        builder.Property(q => q.OwnerUsername).IsRequired();
+        builder.Property(f => f.Rate).IsRequired();
 
         builder.Property(q => q.Id)
             .HasDefaultValueSql("gen_random_uuid()");

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizApp.DataContext;
@@ -11,9 +12,11 @@ using QuizApp.DataContext;
 namespace QuizApp.DataContext.Migrations
 {
     [DbContext(typeof(QuizAppDbContext))]
-    partial class QuizAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250208113044_feedbackAdded")]
+    partial class feedbackAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +38,6 @@ namespace QuizApp.DataContext.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<Guid?>("QuizId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Rate")
                         .HasColumnType("integer");
 
@@ -46,8 +46,6 @@ namespace QuizApp.DataContext.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
 
                     b.ToTable("Feedback", "dbo");
                 });
@@ -89,18 +87,6 @@ namespace QuizApp.DataContext.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Quiz", "dbo");
-                });
-
-            modelBuilder.Entity("QuizApp.Domain.Models.Feedback", b =>
-                {
-                    b.HasOne("QuizApp.Domain.Models.Quiz", null)
-                        .WithMany("Feedbacks")
-                        .HasForeignKey("QuizId");
-                });
-
-            modelBuilder.Entity("QuizApp.Domain.Models.Quiz", b =>
-                {
-                    b.Navigation("Feedbacks");
                 });
 #pragma warning restore 612, 618
         }
