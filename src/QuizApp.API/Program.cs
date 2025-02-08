@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using QuizApp.API.Middleware;
 using QuizApp.DataContext;
 using QuizApp.Domain.Models;
 
@@ -18,6 +19,8 @@ using (var scope = app.Services.CreateScope())
     //dbContext.Database.EnsureCreated();
     dbContext.Database.Migrate();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

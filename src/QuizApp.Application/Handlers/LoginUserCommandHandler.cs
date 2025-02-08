@@ -2,32 +2,35 @@
 using Microsoft.AspNetCore.Identity;
 using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
+using QuizApp.Contracts.Rest.Responses;
+using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
+using System.Net;
 
 namespace QuizApp.Application.Handlers;
 
 public class LoginUserCommandHandler(
     UserManager<User> userManager, 
     SignInManager<User> signInManager,
-    IJwtTokenService jwtTokenService) : IRequestHandler<LoginUserRequest, Result>
+    IJwtTokenService jwtTokenService) : IRequestHandler<LoginUserRequest, LoginUserResponse>
 {
-    public async Task<Result> Handle(LoginUserRequest request, CancellationToken cancellationToken)
+    public async Task<LoginUserResponse> Handle(LoginUserRequest request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)
         {
-            return Result.Failure(["Invalid email or password."]);
+            throw new DomainException("Invalid email or password.", (int)HttpStatusCode.Unauthorized);
         }
 
         var authResult = await signInManager.PasswordSignInAsync(user, request.Password, false, false);
         if (!authResult.Succeeded)
         {
-            return Result.Failure(["Invalid email or password."]);
+            throw new DomainException("Invalid email or password.", (int)HttpStatusCode.Unauthorized);
         }
 
         var token = jwtTokenService.GenerateToken(user);
-        //TODO: change response
-        return Result.Success();
+
+        return new LoginUserResponse(token);
     }
 }

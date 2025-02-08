@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using QuizApp.Contracts.Rest.Requests;
+using QuizApp.Contracts.Rest.Responses;
 
 namespace QuizApp.API.Controllers;
 
@@ -18,14 +19,10 @@ public class AuthController(IMediator mediator) : ControllerBase
         return Ok("User registered successfully.");
     }
 
-    public async Task<IActionResult> Login([FromBody]LoginUserRequest request)
+    [HttpPost("login")]
+    public async Task<LoginUserResponse> Login([FromBody]LoginUserRequest request)
     {
         var authResult = await mediator.Send(request);
-        if (!authResult.IsSuccess)
-        {
-            return Unauthorized(authResult.Errors);
-        }
-
-        return Ok("Login successful.");
+        return authResult;
     }
 }
