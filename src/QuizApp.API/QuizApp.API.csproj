@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QuizApp.Application\QuizApp.Application.csproj" />
+    <ProjectReference Include="..\QuizApp.Contracts.Rest\QuizApp.Contracts.Rest.csproj" />
     <ProjectReference Include="..\QuizApp.DataContext\QuizApp.DataContext.csproj" />
   </ItemGroup>
 

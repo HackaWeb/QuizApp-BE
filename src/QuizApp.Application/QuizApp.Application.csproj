@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuizApp.Contracts.Rest\QuizApp.Contracts.Rest.csproj" />
+    <ProjectReference Include="..\QuizApp.Domain\QuizApp.Domain.csproj" />
+    <ProjectReference Include="..\QuizApp.Infrastructure\QuizApp.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

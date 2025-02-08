@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
 using System.Reflection;
 
 namespace QuizApp.DataContext;
 
-public class QuizAppDbContext : DbContext, IUnitOfWork
+public class QuizAppDbContext : IdentityDbContext<User>, IUnitOfWork
 {
     public const string DefaultSchemaName = "dbo";
 
-    public QuizAppDbContext(DbContextOptions options) 
+    public QuizAppDbContext(DbContextOptions<QuizAppDbContext> options) 
         : base(options)
     {
     }

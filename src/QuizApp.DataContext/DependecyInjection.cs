@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QuizApp.DataContext.Repositories;
+using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
 using QuizApp.Infrastructure.Repositories;
 
@@ -16,6 +18,9 @@ public static class DependecyInjection
         services.AddDbContext<QuizAppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IUnitOfWork, QuizAppDbContext>();
         services.AddScoped<IBlobStorageRepository, BlobStorageRepository>();
+
+        services.AddIdentityCore<User>()
+            .AddEntityFrameworkStores<QuizAppDbContext>();
 
         return services;
     }
