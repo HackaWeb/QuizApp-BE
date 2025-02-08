@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  quizapp.api:
+    image: ${DOCKER_REGISTRY-}quizappapi
+    container_name: QuizApp.Api
+    build:
+      context: .
+      dockerfile: QuizApp.API/Dockerfile
+    ports:
+      - 5000:8080
+      - 5001:8081
+    env_file:
+      - .env
+
+  quizapp.database:
+    image: postgres:latest
+    container_name: QuizApp.Database
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./.containers/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
