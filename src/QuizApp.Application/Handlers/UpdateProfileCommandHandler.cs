@@ -32,17 +32,37 @@ public class UpdateProfileCommandHandler(
             throw new DomainException("User not found.", (int)HttpStatusCode.BadRequest);
         }
 
-        user.Email = request.Email;
-        user.UserName = request.Email;
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            user.Email = request.Email;
+            user.UserName = request.Email;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
+        {
+            user.FirstName = request.FirstName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.LastName))
+        {
+            user.LastName = request.LastName;
+        }
 
         if (request.Avatar is not null)
         {
-            using var stream = request.Avatar.OpenReadStream();
-            user.AvatarUrl = await blobRepository.UploadAsync(stream, $"{DateTime.Now}_{Guid.NewGuid()}", request.Avatar.ContentType, $"{currentUserId}");
-        }
+            if (request.Avatar.ContentType != "image/png")
+            {
+                throw new DomainException("Only PNG images are allowed.", (int)HttpStatusCode.BadRequest);
+            }
 
+            using var stream = request.Avatar.OpenReadStream();
+            user.AvatarUrl = await blobRepository.UploadAsync(
+                stream,
+                $"{currentUserId}.png",
+                request.Avatar.ContentType,
+                "imgs"
+            );
+        }
         var updateResult = await userManager.UpdateAsync(user);
         return updateResult.Succeeded
             ? Result.Success()
