@@ -12,7 +12,7 @@ public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("{userId}")]
-    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser(GetQuizzesByUserRequest request)
+    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromBody]GetQuizzesByUserRequest request)
     {
         var quizzes = await mediator.Send(request);
         return quizzes;
