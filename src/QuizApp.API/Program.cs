@@ -1,5 +1,6 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.API.Middleware;
 using QuizApp.API.ServiceExtensions;
@@ -9,6 +10,11 @@ using QuizApp.Infrastructure.Settings;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

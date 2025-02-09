@@ -6,10 +6,11 @@ public class Quiz
     {
     }
 
-    public Quiz(string description, string imageUrl)
+    public Quiz(string description, string imageUrl, ushort duration)
     {
         Description = description;
         ImageUrl = imageUrl;
+        Duration = duration;
     }
 
     public Guid Id { get; private init; }
@@ -26,7 +27,11 @@ public class Quiz
 
     public uint PassCount { get; set; }
 
-    public string OwnerUsername { get; set; }
+    public Guid OwnerId { get; set; }
+
+    public ushort Duration { get; set; }
+
+    public IReadOnlyList<Question> Questions { get; set; }
 
     public IReadOnlyList<Feedback> Feedbacks { get; set; }
 }

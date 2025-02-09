@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizApp.DataContext;
@@ -11,9 +12,11 @@ using QuizApp.DataContext;
 namespace QuizApp.DataContext.Migrations
 {
     [DbContext(typeof(QuizAppDbContext))]
-    partial class QuizAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250209165353_QuizHistoryAdded")]
+    partial class QuizHistoryAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,26 +185,6 @@ namespace QuizApp.DataContext.Migrations
                     b.ToTable("Feedback", "dbo");
                 });
 
-            modelBuilder.Entity("QuizApp.Domain.Models.Question", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("QuizId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("Question", "dbo");
-                });
-
             modelBuilder.Entity("QuizApp.Domain.Models.Quiz", b =>
                 {
                     b.Property<Guid>("Id")
@@ -217,9 +200,6 @@ namespace QuizApp.DataContext.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("integer");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -404,13 +384,6 @@ namespace QuizApp.DataContext.Migrations
                         .HasForeignKey("QuizId");
                 });
 
-            modelBuilder.Entity("QuizApp.Domain.Models.Question", b =>
-                {
-                    b.HasOne("QuizApp.Domain.Models.Quiz", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId");
-                });
-
             modelBuilder.Entity("QuizApp.Domain.Models.QuizHistory", b =>
                 {
                     b.HasOne("QuizApp.Domain.Models.Quiz", "Quiz")
@@ -425,8 +398,6 @@ namespace QuizApp.DataContext.Migrations
             modelBuilder.Entity("QuizApp.Domain.Models.Quiz", b =>
                 {
                     b.Navigation("Feedbacks");
-
-                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }
