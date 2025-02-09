@@ -11,9 +11,7 @@ public class BlobStorageRepository : IBlobStorageRepository
 
     public BlobStorageRepository(IConfiguration configuration)
     {
-        var connectionString = configuration["AzureBlobStorage:ConnectionString"]
-            ?? throw new ArgumentNullException("AzureBlobStorage connection string is missing");
-
+        var connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
         _blobServiceClient = new BlobServiceClient(connectionString);
     }
 

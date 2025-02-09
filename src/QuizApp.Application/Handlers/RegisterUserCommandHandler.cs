@@ -19,6 +19,7 @@ public class RegisterUserCommandHandler(
         {
             UserName = request.Email,
             Email = request.Email,
+            CreatedAt = DateTime.UtcNow,
         };
 
         var identityResult = await userManager.CreateAsync(user, request.Password);
