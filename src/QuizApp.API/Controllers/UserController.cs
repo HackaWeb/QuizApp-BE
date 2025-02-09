@@ -13,7 +13,7 @@ namespace QuizApp.API.Controllers;
 public class UserController(IMediator mediator) : ControllerBase
 {
     [Authorize]
-    [HttpPut("user-profile")]
+    [HttpPost("user-profile/update")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<UpdateUserProfileResponse> UpdateUserProfile([FromForm] UpdateUserProfileRequest request)
