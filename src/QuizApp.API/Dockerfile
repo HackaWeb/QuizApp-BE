@@ -7,14 +7,16 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["QuizApp.API/QuizApp.API.csproj", "QuizApp.API/"]
-COPY ["QuizApp.Contracts.Rest/QuizApp.Contracts.Rest.csproj", "QuizApp.Contracts.Rest/"]
-COPY ["QuizApp.Application/QuizApp.Application.csproj", "QuizApp.Application/"]
-COPY ["QuizApp.DataContext/QuizApp.DataContext.csproj", "QuizApp.DataContext/"]
-COPY ["QuizApp.Domain/QuizApp.Domain.csproj", "QuizApp.Domain/"]
-COPY ["QuizApp.Infrastructure/QuizApp.Infrastructure.csproj", "QuizApp.Infrastructure/"]
+
+COPY ["src/QuizApp.API/QuizApp.API.csproj", "QuizApp.API/"]
+COPY ["src/QuizApp.Contracts.Rest/QuizApp.Contracts.Rest.csproj", "QuizApp.Contracts.Rest/"]
+COPY ["src/QuizApp.Application/QuizApp.Application.csproj", "QuizApp.Application/"]
+COPY ["src/QuizApp.DataContext/QuizApp.DataContext.csproj", "QuizApp.DataContext/"]
+COPY ["src/QuizApp.Domain/QuizApp.Domain.csproj", "QuizApp.Domain/"]
+COPY ["src/QuizApp.Infrastructure/QuizApp.Infrastructure.csproj", "QuizApp.Infrastructure/"]
 
 RUN dotnet restore "./QuizApp.API/QuizApp.API.csproj"
+
 COPY . .
 WORKDIR "/src/QuizApp.API"
 RUN dotnet build "./QuizApp.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
