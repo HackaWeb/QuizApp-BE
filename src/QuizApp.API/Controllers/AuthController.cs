@@ -8,19 +8,14 @@ namespace QuizApp.API.Controllers;
 public class AuthController(IMediator mediator) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody]RegisterUserRequest request)
+    public async Task<TokenResponse> Register([FromBody]RegisterUserRequest request)
     {
         var registrationResult = await mediator.Send(request);
-        if (!registrationResult.IsSuccess)
-        {
-            return BadRequest(registrationResult.Errors);
-        }
-
-        return Ok("User registered successfully.");
+        return registrationResult;
     }
 
     [HttpPost("login")]
-    public async Task<LoginUserResponse> Login([FromBody]LoginUserRequest request)
+    public async Task<TokenResponse> Login([FromBody]LoginUserRequest request)
     {
         var authResult = await mediator.Send(request);
         return authResult;

@@ -1,14 +1,19 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
+using QuizApp.Contracts.Rest.Responses;
+using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
+using QuizApp.Infrastructure;
+using System.Net;
 
 namespace QuizApp.Application.Handlers;
 
-public class RegisterUserCommandHandler(UserManager<User> userManager) : IRequestHandler<RegisterUserRequest, Result>
+public class RegisterUserCommandHandler(
+    UserManager<User> userManager, 
+    IJwtTokenService jwtTokenService) : IRequestHandler<RegisterUserRequest, TokenResponse>
 {
-    public async Task<Result> Handle(RegisterUserRequest request, CancellationToken cancellationToken)
+    public async Task<TokenResponse> Handle(RegisterUserRequest request, CancellationToken cancellationToken)
     {
         var user = new User
         {
@@ -19,9 +24,10 @@ public class RegisterUserCommandHandler(UserManager<User> userManager) : IReques
         var identityResult = await userManager.CreateAsync(user, request.Password);
         if (!identityResult.Succeeded)
         {
-            return Result.Failure(identityResult.Errors.Select(e => e.Description).ToList());
+            throw new DomainException("Error during registration.", (int)HttpStatusCode.BadRequest, identityResult.Errors.ToDictionary(x => x.Code, x => x.Description));
         }
 
-        return Result.Success();
+        var token = jwtTokenService.GenerateToken(user);
+        return new TokenResponse(token);
     }
 }

@@ -13,9 +13,9 @@ namespace QuizApp.Application.Handlers;
 public class LoginUserCommandHandler(
     UserManager<User> userManager, 
     SignInManager<User> signInManager,
-    IJwtTokenService jwtTokenService) : IRequestHandler<LoginUserRequest, LoginUserResponse>
+    IJwtTokenService jwtTokenService) : IRequestHandler<LoginUserRequest, TokenResponse>
 {
-    public async Task<LoginUserResponse> Handle(LoginUserRequest request, CancellationToken cancellationToken)
+    public async Task<TokenResponse> Handle(LoginUserRequest request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)
@@ -31,6 +31,6 @@ public class LoginUserCommandHandler(
 
         var token = jwtTokenService.GenerateToken(user);
 
-        return new LoginUserResponse(token);
+        return new TokenResponse(token);
     }
 }
