@@ -15,7 +15,7 @@ COPY ["src/QuizApp.DataContext/QuizApp.DataContext.csproj", "QuizApp.DataContext
 COPY ["src/QuizApp.Domain/QuizApp.Domain.csproj", "QuizApp.Domain/"]
 COPY ["src/QuizApp.Infrastructure/QuizApp.Infrastructure.csproj", "QuizApp.Infrastructure/"]
 
-RUN dotnet restore "./QuizApp.API/QuizApp.API.csproj"
+RUN dotnet restore "src/QuizApp.API/QuizApp.API.csproj"
 
 COPY . .
 WORKDIR "/src/QuizApp.API"
