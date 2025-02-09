@@ -1,6 +1,7 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using QuizApp.API.Middleware;
 using QuizApp.API.ServiceExtensions;
 using QuizApp.DataContext;
@@ -36,6 +37,18 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<QuizAppDbContext>();
     dbContext.Database.Migrate();
+
+    var services = scope.ServiceProvider;
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    string[] roleNames = { "Admin", "User" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
 }
 
 app.UseMiddleware<ExceptionMiddleware>();

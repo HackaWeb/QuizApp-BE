@@ -29,7 +29,8 @@ public class LoginUserCommandHandler(
             throw new DomainException("Invalid email or password.", (int)HttpStatusCode.Unauthorized);
         }
 
-        var token = jwtTokenService.GenerateToken(user);
+        var roles = await userManager.GetRolesAsync(user);
+        var token = jwtTokenService.GenerateToken(user, roles);
 
         return new TokenResponse(token);
     }

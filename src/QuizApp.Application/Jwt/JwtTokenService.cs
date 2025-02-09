@@ -12,7 +12,7 @@ namespace QuizApp.Application.Jwt;
 
 public class JwtTokenService(IOptions<JwtSettings> jwtSettings) : IJwtTokenService
 {
-    public string GenerateToken(User user)
+    public string GenerateToken(User user, IList<string> roles)
     {
         var secret = Environment.GetEnvironmentVariable("JWT_SECRET")
             ?? jwtSettings.Value.Secret;
@@ -25,6 +25,11 @@ public class JwtTokenService(IOptions<JwtSettings> jwtSettings) : IJwtTokenServi
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var token = new JwtSecurityToken(
             issuer: jwtSettings.Value.Issuer,

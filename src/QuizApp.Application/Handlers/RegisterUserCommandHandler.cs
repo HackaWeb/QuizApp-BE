@@ -27,7 +27,10 @@ public class RegisterUserCommandHandler(
             throw new DomainException("Error during registration.", (int)HttpStatusCode.BadRequest, identityResult.Errors.ToDictionary(x => x.Code, x => x.Description));
         }
 
-        var token = jwtTokenService.GenerateToken(user);
+        await userManager.AddToRoleAsync(user, "User");
+
+        var roles = await userManager.GetRolesAsync(user);
+        var token = jwtTokenService.GenerateToken(user, roles);
         return new TokenResponse(token);
     }
 }
