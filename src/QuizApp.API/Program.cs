@@ -1,5 +1,4 @@
-﻿using DotNetEnv;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.API.Middleware;
 using QuizApp.API.ServiceExtensions;
@@ -7,7 +6,6 @@ using QuizApp.DataContext;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure.Settings;
 
-Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -18,8 +16,6 @@ builder.Services.ConfigureMediatR();
 builder.Services.AddJwt(builder.Configuration);
 builder.Services.AddOptions();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
-builder.Configuration
-    .AddEnvironmentVariables();
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 {
     options.Password.RequireDigit = true;
