@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
+using QuizApp.Contracts.Rest.Responses;
+using System.Security.Claims;
 
 namespace QuizApp.API.Controllers;
 
@@ -18,5 +20,17 @@ public class UserController(IMediator mediator) : ControllerBase
     {
         var updatedResult = await mediator.Send(request);
         return updatedResult;
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("user-profile")]
+    public async Task<GetUserProfileResponse> GetUserProfile()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var getUserProfileRequest = new GetUserProfileRequest(userId);
+        var userProfile = await mediator.Send(getUserProfileRequest);
+
+        return userProfile;
     }
 }

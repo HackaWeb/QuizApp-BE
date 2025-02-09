@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using QuizApp.DataContext.Repositories;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
+using QuizApp.Infrastructure.Repositories;
 using System.Reflection;
 
 namespace QuizApp.DataContext;
@@ -15,6 +17,10 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
         : base(options)
     {
     }
+
+    public IRepository<Quiz> QuizRepository => new Repository<Quiz>(this);
+
+    public IRepository<QuizHistory> QuizHistoryRepository => new Repository<QuizHistory>(this);
 
     public async Task SaveEntitiesAsync(CancellationToken cancellationToken)
     {

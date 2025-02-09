@@ -26,7 +26,7 @@ public class Quiz
 
     public uint PassCount { get; set; }
 
-    public string OwnerUsername { get; set; }
+    public Guid OwnerId { get; set; }
 
     public IReadOnlyList<Feedback> Feedbacks { get; set; }
 }

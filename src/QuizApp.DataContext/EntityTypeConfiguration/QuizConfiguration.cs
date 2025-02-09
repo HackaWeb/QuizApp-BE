@@ -12,7 +12,7 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
 
         builder.Property(q => q.Title).IsRequired();
         builder.Property(q => q.ImageUrl).IsRequired();
-        builder.Property(q => q.OwnerUsername).IsRequired();
+        builder.Property(q => q.OwnerId).IsRequired();
 
         builder.Property(q => q.Id)
             .HasDefaultValueSql("gen_random_uuid()");
