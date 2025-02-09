@@ -19,7 +19,7 @@ RUN dotnet restore "./QuizApp.API/QuizApp.API.csproj"
 
 COPY . .
 WORKDIR "/src/QuizApp.API"
-RUN dotnet build "./QuizApp.API/QuizApp.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build ".//QuizApp.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
