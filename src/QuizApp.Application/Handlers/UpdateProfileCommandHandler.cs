@@ -59,7 +59,7 @@ public class UpdateProfileCommandHandler(
             using var stream = request.Avatar.OpenReadStream();
             user.AvatarUrl = await blobRepository.UploadAsync(
                 stream,
-                $"{currentUserId}.png",
+                $"{currentUserId}-{Guid.NewGuid()}.png",
                 request.Avatar.ContentType,
                 "imgs"
             );
