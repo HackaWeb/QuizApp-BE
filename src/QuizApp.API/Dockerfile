@@ -12,7 +12,7 @@ COPY ["QuizApp.Application/QuizApp.Application.csproj", "QuizApp.Application/"]
 COPY ["QuizApp.DataContext/QuizApp.DataContext.csproj", "QuizApp.DataContext/"]
 COPY ["QuizApp.Domain/QuizApp.Domain.csproj", "QuizApp.Domain/"]
 COPY ["QuizApp.Infrastructure/QuizApp.Infrastructure.csproj", "QuizApp.Infrastructure/"]
-COPY ["QuizApp.Contracts.Rest/QuizApp.Contracts.Rest.csproj", "QuizApp.Contracts.Rest/"]
+COPY ["contracts/QuizApp.Contracts.Rest/QuizApp.Contracts.Rest.csproj", "contracts/QuizApp.Contracts.Rest/"]
 COPY . .
 RUN dotnet restore "./QuizApp.API/QuizApp.API.csproj"
 WORKDIR "/src/QuizApp.API"
