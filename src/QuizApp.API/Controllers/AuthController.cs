@@ -5,6 +5,7 @@ using QuizApp.Contracts.Rest.Responses;
 
 namespace QuizApp.API.Controllers;
 
+[Route("api/[controller]")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
     [HttpPost("register")]

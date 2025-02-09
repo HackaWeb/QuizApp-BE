@@ -38,7 +38,7 @@ public static class ServiceExtensions
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings[nameof(JwtSettings.Issuer)],
                 ValidAudience = jwtSettings[nameof(JwtSettings.Audience)],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings[nameof(JwtSettings.ExpiryMinutes)]!))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings[nameof(JwtSettings.Secret)]!))
             };
         });
 
