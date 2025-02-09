@@ -41,7 +41,8 @@ jobs:
         with:
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          file: QuizApp.API/Dockerfile
+          file: src/QuizApp.API/Dockerfile
+          context: .
 
       - name: Azure Login
         uses: azure/login@v2
