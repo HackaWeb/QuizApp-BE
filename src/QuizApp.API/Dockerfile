@@ -15,12 +15,11 @@ COPY ["src/QuizApp.DataContext/QuizApp.DataContext.csproj", "QuizApp.DataContext
 COPY ["src/QuizApp.Domain/QuizApp.Domain.csproj", "QuizApp.Domain/"]
 COPY ["src/QuizApp.Infrastructure/QuizApp.Infrastructure.csproj", "QuizApp.Infrastructure/"]
 
-WORKDIR "/src/QuizApp.API"
 RUN dotnet restore "./QuizApp.API/QuizApp.API.csproj"
 
-COPY src .
-
-RUN dotnet build "QuizApp.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY . .
+WORKDIR "/src/QuizApp.API"
+RUN dotnet build "./QuizApp.API/QuizApp.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
