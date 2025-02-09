@@ -13,8 +13,11 @@ COPY ["QuizApp.DataContext/QuizApp.DataContext.csproj", "QuizApp.DataContext/"]
 COPY ["QuizApp.Domain/QuizApp.Domain.csproj", "QuizApp.Domain/"]
 COPY ["QuizApp.Infrastructure/QuizApp.Infrastructure.csproj", "QuizApp.Infrastructure/"]
 COPY ["QuizApp.Contracts.Rest/QuizApp.Contracts.Rest.csproj", "QuizApp.Contracts.Rest/"]
-COPY . .
+
+RUN ls -la /src
+
 RUN dotnet restore "./QuizApp.API/QuizApp.API.csproj"
+COPY . .
 WORKDIR "/src/QuizApp.API"
 RUN dotnet build "./QuizApp.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
