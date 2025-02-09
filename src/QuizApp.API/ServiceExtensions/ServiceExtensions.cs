@@ -42,6 +42,8 @@ public static class ServiceExtensions
             };
         });
 
+        services.AddAuthorization();
+
         return services;
     }
 

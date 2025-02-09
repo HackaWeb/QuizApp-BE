@@ -13,9 +13,9 @@ namespace QuizApp.Application.Handlers;
 public class LoginUserCommandHandler(
     UserManager<User> userManager, 
     SignInManager<User> signInManager,
-    IJwtTokenService jwtTokenService) : IRequestHandler<LoginUserRequest, LoginUserResponse>
+    IJwtTokenService jwtTokenService) : IRequestHandler<LoginUserRequest, TokenResponse>
 {
-    public async Task<LoginUserResponse> Handle(LoginUserRequest request, CancellationToken cancellationToken)
+    public async Task<TokenResponse> Handle(LoginUserRequest request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)
@@ -29,8 +29,9 @@ public class LoginUserCommandHandler(
             throw new DomainException("Invalid email or password.", (int)HttpStatusCode.Unauthorized);
         }
 
-        var token = jwtTokenService.GenerateToken(user);
+        var roles = await userManager.GetRolesAsync(user);
+        var token = jwtTokenService.GenerateToken(user, roles);
 
-        return new LoginUserResponse(token);
+        return new TokenResponse(token);
     }
 }
