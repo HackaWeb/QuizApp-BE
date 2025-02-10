@@ -6,7 +6,6 @@ using QuizApp.Contracts.Rest.Responses;
 using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
-using QuizApp.Infrastructure.Specifications;
 using System.Net;
 
 namespace QuizApp.Application.Handlers;
@@ -33,16 +32,16 @@ public class GetUserProfileHandler(
             throw new DomainException("You do not have permission to edit this profile.", (int)HttpStatusCode.Unauthorized);
         }
 
-        var completedQuizzez = await unitOfWork.QuizHistoryRepository.GetBySpecification(new QuizHistorySpecification(user.Id, true));
-        var createdQuizzez = await unitOfWork.QuizRepository.GetBySpecification(new QuizSpecification(userId: user.Id, isReadOnly: true));
+        var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
+        var quizCount = quizzes.Count(x => x.OwnerId == Guid.Parse(currentUserId));
 
         var userProfile = new GetUserProfileResponse(
             user.FirstName,
             user.LastName,
             user.Email!,
             user.AvatarUrl,
-            (uint)completedQuizzez.Count,
-            (uint)createdQuizzez.Count,
+            (uint)quizzes.Count,
+            (uint)quizCount,
             isAdmin);
 
         return userProfile;

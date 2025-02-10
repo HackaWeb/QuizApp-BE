@@ -5,13 +5,13 @@ namespace QuizApp.Infrastructure;
 
 public interface IUnitOfWork
 {
-    IRepository<Quiz> QuizRepository { get; }
-
-    IRepository<Question> QuestionsRepository { get; }
+    IQuestionRepository QuestionRepository { get; }
 
     IRepository<AnswerOption> ChoiceOptions { get;  }
 
     IRepository<QuizHistory> QuizHistoryRepository { get; }
+
+    IQuizRepository QuizRepository { get; }
 
     Task SaveEntitiesAsync(CancellationToken cancellationToken = default);
 }

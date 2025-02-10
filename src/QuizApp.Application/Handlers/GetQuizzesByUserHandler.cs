@@ -11,10 +11,11 @@ public class GetQuizzesByUserHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 {
     public async Task<GetQuizzesByUserResponse> Handle(GetQuizzesByUserRequest request, CancellationToken cancellationToken)
     {
-        var quizzes = await unitOfWork.QuizRepository.GetBySpecification(new QuizSpecification(userId: Guid.Parse(request.UserId), isReadOnly: true));
+        var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
         var quizHistory = await unitOfWork.QuizHistoryRepository.GetBySpecification(new QuizHistorySpecification(Guid.Parse(request.UserId), true));
 
         var pagedItems = quizzes
+            .Where(x => x.OwnerId == Guid.Parse(request.UserId))
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .Select(q => new Quiz(
