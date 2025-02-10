@@ -11,9 +11,9 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
         builder.HasKey(q => q.Id);
 
         builder.Property(q => q.Title).IsRequired();
-        builder.Property(q => q.ImageUrl).IsRequired();
         builder.Property(q => q.OwnerId).IsRequired();
         builder.Property(q => q.Duration).IsRequired();
+        builder.Property(q => q.ImageUrl).IsRequired(false);
 
         builder.Property(q => q.Id)
             .HasDefaultValueSql("gen_random_uuid()");

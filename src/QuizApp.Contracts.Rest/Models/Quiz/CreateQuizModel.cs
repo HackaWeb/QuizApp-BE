@@ -10,8 +10,6 @@ public class CreateQuizModel
 
     public uint Duration { get; set; }
 
-    public IFormFile? File { get; set; }
-
 
     public List<CreateQuestionModel> Questions { get; set; }
 }

@@ -25,7 +25,7 @@ public class GetQuizByIdHandler(
         var currentUserId = userManager.GetUserId(currentUser);
         var isAdmin = currentUser.IsInRole("Admin");
 
-        var quiz = await unitOfWork.QuizRepository.GetSingleBySpecification(new QuizSpecification(quizId: request.id, isReadOnly: true));
+        var quiz = await unitOfWork.QuizRepository.GetByIdAsync(request.id);
 
         if (Guid.Parse(currentUserId) != quiz.OwnerId && !isAdmin)
         {

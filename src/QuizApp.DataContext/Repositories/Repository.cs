@@ -17,6 +17,12 @@ public class Repository<T>(QuizAppDbContext context) : IRepository<T> where T : 
         await context.Set<T>().AddRangeAsync(entities, cancellationToken);
     }
 
+    public async Task RemoveAsync(Guid id)
+    {
+        var sql = $"DELETE FROM dbo.\"Quiz\" WHERE \"Id\" = \"{id}\"";
+        await context.Database.ExecuteSqlRawAsync(sql, id);
+    }
+
     public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await context.Set<T>().ToListAsync(cancellationToken);

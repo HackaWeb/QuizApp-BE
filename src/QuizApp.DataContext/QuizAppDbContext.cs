@@ -18,13 +18,19 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     {
     }
 
-    public IRepository<Quiz> QuizRepository => new Repository<Quiz>(this);
+    public DbSet<Quiz> Quizzes { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<AnswerOption> AnswerOptions { get; set; }
 
     public IRepository<Question> QuestionsRepository => new Repository<Question>(this);
 
     public IRepository<AnswerOption> ChoiceOptions => new Repository<AnswerOption>(this);
 
     public IRepository<QuizHistory> QuizHistoryRepository => new Repository<QuizHistory>(this);
+
+    public IQuizRepository QuizRepository => new QuizRepository(this);
+
+    public IQuestionRepository QuestionRepository => new QuestionRepository(this);
 
     public async Task SaveEntitiesAsync(CancellationToken cancellationToken)
     {
@@ -35,6 +41,18 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         modelBuilder.HasDefaultSchema(DefaultSchemaName);
+
+        modelBuilder.Entity<Question>()
+            .HasOne(q => q.Quiz)
+            .WithMany(q => q.Questions)
+            .HasForeignKey(q => q.QuizId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AnswerOption>()
+            .HasOne(a => a.Question)
+            .WithMany(q => q.ChoiceOptions)
+            .HasForeignKey(a => a.QuestionId)
+            .OnDelete(DeleteBehavior.Cascade); 
 
         base.OnModelCreating(modelBuilder);
     }
