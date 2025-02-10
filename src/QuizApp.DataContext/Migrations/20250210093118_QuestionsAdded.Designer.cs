@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizApp.DataContext;
@@ -11,9 +12,11 @@ using QuizApp.DataContext;
 namespace QuizApp.DataContext.Migrations
 {
     [DbContext(typeof(QuizAppDbContext))]
-    partial class QuizAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250210093118_QuestionsAdded")]
+    partial class QuestionsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,29 +156,6 @@ namespace QuizApp.DataContext.Migrations
                     b.ToTable("AspNetUserTokens", "dbo");
                 });
 
-            modelBuilder.Entity("QuizApp.Domain.Models.AnswerOption", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("AnswerOption", "dbo");
-                });
-
             modelBuilder.Entity("QuizApp.Domain.Models.Feedback", b =>
                 {
                     b.Property<Guid>("Id")
@@ -188,7 +168,7 @@ namespace QuizApp.DataContext.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<Guid>("QuizId")
+                    b.Property<Guid?>("QuizId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Rate")
@@ -212,8 +192,14 @@ namespace QuizApp.DataContext.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("CorrectAnswer")
+                        .HasColumnType("jsonb");
+
                     b.Property<string>("MediaUrl")
                         .HasColumnType("text");
+
+                    b.Property<string>("Options")
+                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("QuizId")
                         .HasColumnType("uuid");
@@ -428,26 +414,11 @@ namespace QuizApp.DataContext.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuizApp.Domain.Models.AnswerOption", b =>
-                {
-                    b.HasOne("QuizApp.Domain.Models.Question", "Question")
-                        .WithMany("ChoiceOptions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
             modelBuilder.Entity("QuizApp.Domain.Models.Feedback", b =>
                 {
-                    b.HasOne("QuizApp.Domain.Models.Quiz", "Quiz")
+                    b.HasOne("QuizApp.Domain.Models.Quiz", null)
                         .WithMany("Feedbacks")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
+                        .HasForeignKey("QuizId");
                 });
 
             modelBuilder.Entity("QuizApp.Domain.Models.Question", b =>
@@ -470,11 +441,6 @@ namespace QuizApp.DataContext.Migrations
                         .IsRequired();
 
                     b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("QuizApp.Domain.Models.Question", b =>
-                {
-                    b.Navigation("ChoiceOptions");
                 });
 
             modelBuilder.Entity("QuizApp.Domain.Models.Quiz", b =>

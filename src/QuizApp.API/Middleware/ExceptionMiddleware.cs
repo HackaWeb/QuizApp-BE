@@ -1,14 +1,21 @@
 ﻿using FluentValidation;
 using QuizApp.Domain.Exceptions;
 using System.Net;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace QuizApp.API.Middleware;
 
 public class ExceptionMiddleware(
-    RequestDelegate next, 
+    RequestDelegate next,
     ILogger<ExceptionMiddleware> logger)
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = false
+    };
+
     public async Task Invoke(HttpContext context)
     {
         try
@@ -73,7 +80,7 @@ public class ExceptionMiddleware(
             message = "An unexpected error occurred."
         };
 
-        var jsonResponse = JsonSerializer.Serialize(response);
+        var jsonResponse = JsonSerializer.Serialize(response, JsonOptions);
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

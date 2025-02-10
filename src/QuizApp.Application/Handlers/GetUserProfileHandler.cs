@@ -34,7 +34,7 @@ public class GetUserProfileHandler(
         }
 
         var completedQuizzez = await unitOfWork.QuizHistoryRepository.GetBySpecification(new QuizHistorySpecification(user.Id, true));
-        var createdQuizzez = await unitOfWork.QuizRepository.GetBySpecification(new QuizSpecification(user.Id, isReadOnly: true));
+        var createdQuizzez = await unitOfWork.QuizRepository.GetBySpecification(new QuizSpecification(userId: user.Id, isReadOnly: true));
 
         var userProfile = new GetUserProfileResponse(
             user.FirstName,

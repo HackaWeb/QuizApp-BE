@@ -9,7 +9,12 @@ public class Repository<T>(QuizAppDbContext context) : IRepository<T> where T : 
 {
     public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await context.Set<T>().AddAsync(entity, cancellationToken);
+        await Task.Run(() => context.Set<T>().Add(entity), cancellationToken);
+    }
+
+    public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+    {
+        await context.Set<T>().AddRangeAsync(entities, cancellationToken);
     }
 
     public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken = default)

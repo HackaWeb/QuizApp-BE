@@ -9,4 +9,5 @@ public interface IRepository<T> where T : class
     Task<List<T>> GetBySpecification(Specification<T> specification, CancellationToken cancellationToken = default);
     Task<T?> GetSingleBySpecification(Specification<T> specification, CancellationToken cancellationToken = default);
     Task AddAsync(T entity, CancellationToken cancellationToken = default);
+    Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
 }

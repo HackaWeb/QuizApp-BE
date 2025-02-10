@@ -1,6 +1,5 @@
-﻿namespace QuizApp.Domain.Models;
-
-public class Feedback
+﻿namespace QuizApp.Contracts.Rest.Models.Quiz;
+public class FeedbackModel
 {
     public Guid Id { get; set; }
 
@@ -9,8 +8,4 @@ public class Feedback
     public ushort Rate { get; set; }
 
     public DateTime CreatedAt { get; set; }
-
-    public Quiz Quiz { get; set; }
-
-    public Guid QuizId { get; set; }
 }

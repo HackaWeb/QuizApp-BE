@@ -1,8 +1,8 @@
-﻿namespace QuizApp.Domain.Models;
+﻿namespace QuizApp.Contracts.Rest.Models.Quiz;
 
-public class Quiz
+public class QuizModel
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
     public string Title { get; set; }
 
@@ -20,7 +20,7 @@ public class Quiz
 
     public uint Duration { get; set; }
 
-    public List<Question> Questions { get; set; }
+    public List<QuestionModel> Questions { get; set; }
 
-    public List<Feedback> Feedbacks { get; set; }
+    public List<FeedbackModel> Feedbacks { get; set; }
 }

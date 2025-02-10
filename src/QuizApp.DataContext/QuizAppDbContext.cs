@@ -20,6 +20,10 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
 
     public IRepository<Quiz> QuizRepository => new Repository<Quiz>(this);
 
+    public IRepository<Question> QuestionsRepository => new Repository<Question>(this);
+
+    public IRepository<AnswerOption> ChoiceOptions => new Repository<AnswerOption>(this);
+
     public IRepository<QuizHistory> QuizHistoryRepository => new Repository<QuizHistory>(this);
 
     public async Task SaveEntitiesAsync(CancellationToken cancellationToken)

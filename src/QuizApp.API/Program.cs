@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.API.Middleware;
 using QuizApp.API.ServiceExtensions;
+using QuizApp.Application.Profile;
 using QuizApp.DataContext;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure.Settings;
@@ -37,6 +38,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
     .AddEntityFrameworkStores<QuizAppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAutoMapper(typeof(QuizProfile));
 
 builder.Services.AddSwaggerGen(options =>
 {

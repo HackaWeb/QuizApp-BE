@@ -50,19 +50,19 @@ public class UpdateProfileCommandHandler(
 
         if (request.Avatar is not null)
         {
-            if (request.Avatar.ContentType != "image/png")
+            var allowedFormats = new HashSet<string> { "image/png", "image/jpeg" };
+            if (!allowedFormats.Contains(request.Avatar.ContentType))
             {
-                throw new DomainException("Only PNG images are allowed.", (int)HttpStatusCode.BadRequest);
+                throw new DomainException("Only PNG and JPG images are allowed.", (int)HttpStatusCode.BadRequest);
             }
 
+            var extension = request.Avatar.ContentType == "image/png" ? "png" : "jpg";
+            var fileName = $"{currentUserId}-{Guid.NewGuid()}.{extension}";
+
             using var stream = request.Avatar.OpenReadStream();
-            user.AvatarUrl = await blobRepository.UploadAsync(
-                stream,
-                $"{currentUserId}-{Guid.NewGuid()}.png",
-                request.Avatar.ContentType,
-                "imgs"
-            );
+            user.AvatarUrl = await blobRepository.UploadAsync(stream, fileName, request.Avatar.ContentType, "media");
         }
+
         var updateResult = await userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
         {
