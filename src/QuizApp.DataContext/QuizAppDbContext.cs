@@ -21,6 +21,7 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public DbSet<Quiz> Quizzes { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<AnswerOption> AnswerOptions { get; set; }
+    public DbSet<Feedback> Feedback { get; set; }
 
     public IRepository<Question> QuestionsRepository => new Repository<Question>(this);
 
@@ -31,6 +32,8 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public IQuizRepository QuizRepository => new QuizRepository(this);
 
     public IQuestionRepository QuestionRepository => new QuestionRepository(this);
+
+    public IFeedbackRepository FeedbackRepository => new FeedbackRepository(this);
 
     public async Task SaveEntitiesAsync(CancellationToken cancellationToken)
     {
@@ -52,7 +55,13 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
             .HasOne(a => a.Question)
             .WithMany(q => q.ChoiceOptions)
             .HasForeignKey(a => a.QuestionId)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Feedback>()
+            .HasOne(f => f.Quiz)
+            .WithMany(q => q.Feedbacks)
+            .HasForeignKey(f => f.QuizId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }
