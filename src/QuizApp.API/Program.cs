@@ -1,6 +1,5 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using QuizApp.API.Middleware;
 using QuizApp.API.ServiceExtensions;
@@ -24,6 +23,7 @@ builder.Services.AddDatabaseContext(builder.Configuration);
 builder.Services.ConfigureMediatR();
 builder.Services.AddJwt(builder.Configuration);
 builder.Services.AddOptions();
+builder.Services.AddLogging();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Configuration.AddEnvironmentVariables();
 
@@ -106,6 +106,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
