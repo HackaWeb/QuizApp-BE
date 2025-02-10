@@ -10,6 +10,7 @@ public class QuizRepository(QuizAppDbContext _context) : IQuizRepository
     public async Task<Quiz?> GetByIdAsync(Guid id)
     {
         return await _context.Quizzes
+            .Include(q => q.Feedbacks)
             .Include(q => q.Questions)
             .ThenInclude(q => q.ChoiceOptions)
             .FirstOrDefaultAsync(q => q.Id == id);
@@ -20,6 +21,7 @@ public class QuizRepository(QuizAppDbContext _context) : IQuizRepository
         return await _context.Quizzes
             .Include(q => q.Questions)
             .ThenInclude(q => q.ChoiceOptions)
+            .Include(q => q.Feedbacks)
             .ToListAsync();
     }
 
