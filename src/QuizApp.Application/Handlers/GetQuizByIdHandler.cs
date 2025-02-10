@@ -33,6 +33,12 @@ public class GetQuizByIdHandler(
         }
         var quizDto = mapper.Map<QuizModel>(quiz);
 
+        foreach (var item in quizDto.Questions)
+        {
+            var answerOptions = await unitOfWork.ChoiceOptions.GetBySpecification(new AnswerOptionSpecification(item.Id));
+            item.ChoiceOptions = mapper.Map<List<AnswerOptionModel>?>(answerOptions);
+        }
+
         return new GetQuizByIdResponse(quizDto);
     }
 }
