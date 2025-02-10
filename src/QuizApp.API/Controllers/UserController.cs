@@ -37,13 +37,13 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpDelete("user-profile")]
-    public async Task<IActionResult> DeleteUser([FromQuery] string? userId)
+    public async Task<Result> DeleteUser([FromQuery] string? userId)
     {
         userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var deleteUserProfileRequest = new DeleteUserProfileRequest(userId!);
         await mediator.Send(deleteUserProfileRequest);
 
-        return Ok("User successfully deleted");
+        return Result.Success();
     }
 }
