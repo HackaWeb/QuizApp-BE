@@ -30,10 +30,10 @@ public class QuizController(IMediator mediator) : ControllerBase
         return response;
     }
 
-    [HttpPost("media/upload")]
+    [HttpPost("media/upload/{quizId}")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result> CreateQuizMedia(string quizId, IFormFile file)
+    public async Task<Result> CreateQuizMedia([FromQuery]string quizId, IFormFile file)
     {
         await mediator.Send(new UploadQuizFileRequest
         {
@@ -44,10 +44,10 @@ public class QuizController(IMediator mediator) : ControllerBase
         return Result.Success();
     }
 
-    [HttpPost("media/question/upload")]
+    [HttpPost("media/question/upload/{questionId}")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result> CreateQuestionMedia(string questionId, IFormFile file)
+    public async Task<Result> CreateQuestionMedia([FromQuery]string questionId, IFormFile file)
     {
         await mediator.Send(new UploadQuestionMediaRequest
         {
