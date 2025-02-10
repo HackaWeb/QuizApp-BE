@@ -62,7 +62,7 @@ public class UpdateProfileCommandHandler(
             using var stream = request.Avatar.OpenReadStream();
             user.AvatarUrl = await blobRepository.UploadAsync(stream, fileName, request.Avatar.ContentType, "media");
         }
-        else
+        else if (request.Avatar.Length != 0)
         {
             user.AvatarUrl = null;
         }
