@@ -17,4 +17,24 @@ public class QuizController(IMediator mediator) : ControllerBase
         var quizzes = await mediator.Send(request);
         return quizzes;
     }
+
+    [HttpPost]
+    [Consumes("multipart/form-data")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task CreateQuiz([FromForm]CreateQuizRequest request)
+    {
+        await mediator.Send(request);
+    }
+
+    [HttpGet("id")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<GetQuizByIdResponse> GetQuizById([FromQuery] string id)
+    {
+        var request = new GetQuizByIdRequest(Guid.Parse(id));
+        var quiz = await mediator.Send(request);
+
+        return quiz;
+    }
 }

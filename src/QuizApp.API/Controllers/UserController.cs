@@ -35,6 +35,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return userProfile;
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpDelete("user-profile")]
     public async Task<IActionResult> DeleteUser([FromQuery] string? userId)
     {
