@@ -48,7 +48,7 @@ public class UpdateProfileCommandHandler(
             user.LastName = request.LastName;
         }
 
-        if (request.Avatar is not null)
+        if (request.Avatar is not null && request.Avatar.Length > 0)
         {
             var allowedFormats = new HashSet<string> { "image/png", "image/jpeg" };
             if (!allowedFormats.Contains(request.Avatar.ContentType))
@@ -62,7 +62,7 @@ public class UpdateProfileCommandHandler(
             using var stream = request.Avatar.OpenReadStream();
             user.AvatarUrl = await blobRepository.UploadAsync(stream, fileName, request.Avatar.ContentType, "media");
         }
-        else if (request.Avatar.Length != 0)
+        else if (request.Avatar is null)
         {
             user.AvatarUrl = null;
         }
