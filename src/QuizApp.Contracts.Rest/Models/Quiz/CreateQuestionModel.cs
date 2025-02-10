@@ -2,6 +2,7 @@
 
 public class CreateQuestionModel
 {
+    public Guid QuestionId { get; set; }
     public string Title { get; set; }
     public QuestionType Type { get; set; }
 

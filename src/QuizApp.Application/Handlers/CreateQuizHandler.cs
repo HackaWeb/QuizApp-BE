@@ -48,6 +48,7 @@ public class CreateQuizHandler(
         {
             var question = new Question
             {
+                Id = item.QuestionId,
                 Text = item.Title,
                 Type = (QuestionType)item.Type,
                 ChoiceOptions = item.Options?.Select(o => new AnswerOption
