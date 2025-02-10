@@ -65,7 +65,7 @@ public class CreateQuizHandler(
 
         logger.LogInformation("Quiz '{QuizTitle}' created successfully!", quiz.Title);
 
-        var createdQuiz = unitOfWork.QuizRepository.GetByIdAsync(quiz.Id);
+        var createdQuiz = await unitOfWork.QuizRepository.GetByIdAsync(quiz.Id);
         return mapper.Map<QuizModel>(createdQuiz);
     }
 }
