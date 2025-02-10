@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
 using QuizApp.Domain.Exceptions;
@@ -22,31 +21,31 @@ public class UpdateProfileCommandHandler(
         var currentUserId = userManager.GetUserId(currentUser);
         var isAdmin = currentUser.IsInRole("Admin");
 
-        if (currentUserId != request.userId && !isAdmin)
+        if (currentUserId != request.UserId && !isAdmin)
         {
             throw new DomainException("You do not have permission to edit this profile.", (int)HttpStatusCode.Unauthorized);
         }
 
-        var user = await userManager.FindByIdAsync(request.userId);
+        var user = await userManager.FindByIdAsync(request.UserId!);
         if (user == null)
         {
             throw new DomainException("User not found.", (int)HttpStatusCode.BadRequest);
         }
 
-        if (!string.IsNullOrWhiteSpace(request.email))
+        if (!string.IsNullOrWhiteSpace(request.Email))
         {
-            user.Email = request.email;
-            user.UserName = request.email;
+            user.Email = request.Email;
+            user.UserName = request.Email;
         }
 
-        if (!string.IsNullOrWhiteSpace(request.firstName))
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
         {
-            user.FirstName = request.firstName;
+            user.FirstName = request.FirstName;
         }
 
-        if (!string.IsNullOrWhiteSpace(request.lastName))
+        if (!string.IsNullOrWhiteSpace(request.LastName))
         {
-            user.LastName = request.lastName;
+            user.LastName = request.LastName;
         }
 
         if (request.Avatar is not null)
