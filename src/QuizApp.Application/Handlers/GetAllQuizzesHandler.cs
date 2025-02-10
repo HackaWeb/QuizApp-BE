@@ -13,7 +13,7 @@ public class GetAllQuizzesHandler(
 {
     public async Task<GetAllQuizzesResponse> Handle(GetAllQuizzesRequest request, CancellationToken cancellationToken)
     {
-        var domainQuizzes = await unitOfWork.QuizHistoryRepository.GetAllAsync();
+        var domainQuizzes = await unitOfWork.QuizRepository.GetAllAsync();
         var quizModels = mapper.Map<List<QuizModel>>(domainQuizzes);
 
         return new GetAllQuizzesResponse(quizModels);

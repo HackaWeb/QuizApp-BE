@@ -47,12 +47,12 @@ public class QuizController(IMediator mediator) : ControllerBase
     [HttpPost("media/question/upload")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result> CreateQuestionMedia(string quizId, IFormFile file)
+    public async Task<Result> CreateQuestionMedia(string questionId, IFormFile file)
     {
-        await mediator.Send(new UploadQuizFileRequest
+        await mediator.Send(new UploadQuestionMediaRequest
         {
             File = file,
-            QuizId = quizId
+            QuestionId = questionId
         });
 
         return Result.Success();
