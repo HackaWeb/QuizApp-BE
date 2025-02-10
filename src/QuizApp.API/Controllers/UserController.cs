@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
 using System.Security.Claims;
@@ -12,7 +13,7 @@ namespace QuizApp.API.Controllers;
 public class UserController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPost("user-profile/update")]
+    [HttpPut("user-profile")]
     [Consumes("multipart/form-data")]
     public async Task<UpdateUserProfileResponse> UpdateUserProfile([FromForm] UpdateUserProfileRequest request)
     {
@@ -32,5 +33,16 @@ public class UserController(IMediator mediator) : ControllerBase
         var userProfile = await mediator.Send(getUserProfileRequest);
 
         return userProfile;
+    }
+
+    [HttpDelete("user-profile")]
+    public async Task<IActionResult> DeleteUser([FromQuery] string? userId)
+    {
+        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var deleteUserProfileRequest = new DeleteUserProfileRequest(userId!);
+        await mediator.Send(deleteUserProfileRequest);
+
+        return Ok("User successfully deleted");
     }
 }
