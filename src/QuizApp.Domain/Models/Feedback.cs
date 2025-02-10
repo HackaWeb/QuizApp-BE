@@ -13,4 +13,6 @@ public class Feedback
     public Quiz Quiz { get; set; }
 
     public Guid QuizId { get; set; }
+
+    public Guid UserId { get; set; }
 }

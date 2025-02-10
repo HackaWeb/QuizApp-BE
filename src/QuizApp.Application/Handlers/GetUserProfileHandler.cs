@@ -27,11 +27,6 @@ public class GetUserProfileHandler(
         var currentUserId = userManager.GetUserId(currentUser);
         var isAdmin = currentUser.IsInRole("Admin");
 
-        if (currentUserId != request.UserId && !isAdmin)
-        {
-            throw new DomainException("You do not have permission to edit this profile.", (int)HttpStatusCode.Unauthorized);
-        }
-
         var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
         var quizCount = quizzes.Count(x => x.OwnerId == Guid.Parse(currentUserId));
 

@@ -12,6 +12,8 @@ public interface IUnitOfWork
     IRepository<QuizHistory> QuizHistoryRepository { get; }
 
     IQuizRepository QuizRepository { get; }
+    
+    IFeedbackRepository FeedbackRepository { get; }
 
     Task SaveEntitiesAsync(CancellationToken cancellationToken = default);
 }
