@@ -48,7 +48,7 @@ public class UpdateProfileCommandHandler(
             user.LastName = request.LastName;
         }
 
-        if (request.Avatar is not null && request.Avatar.Length > 0)
+        if (request.Avatar is not null && !string.IsNullOrEmpty(request.Avatar.FileName))
         {
             var allowedFormats = new HashSet<string> { "image/png", "image/jpeg" };
             if (!allowedFormats.Contains(request.Avatar.ContentType))
