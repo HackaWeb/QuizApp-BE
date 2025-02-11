@@ -8,7 +8,6 @@ using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
 using QuizApp.Domain.Exceptions;
 using System.Net;
-using System.Security.Claims;
 
 namespace QuizApp.API.Controllers;
 
@@ -16,13 +15,9 @@ namespace QuizApp.API.Controllers;
 public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPost("{userId?}")]
-    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromRoute] string? userId, [FromBody] GetQuizzesByUserRequest request)
+    [HttpPost("{userId}")]
+    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromRoute] string userId, [FromBody] GetQuizzesByUserRequest request)
     {
-        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
-        {
-            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
         if (!Guid.TryParse(userId, out var userGuid))
         {
             throw new DomainException("Invalid user ID format.", (int)HttpStatusCode.BadRequest);
@@ -33,14 +28,9 @@ public class QuizController(IMediator mediator) : ControllerBase
         return quizzes;
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPost("completed/{userId?}")]
-    public async Task<List<QuizModel>> GetCompleteQuizzesByUser([FromRoute] string? userId)
+    [HttpPost("completed/{userId}")]
+    public async Task<List<QuizModel>> GetCompleteQuizzesByUser([FromRoute] string userId)
     {
-        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
-        {
-            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
 
         if (!Guid.TryParse(userId, out var userGuid))
         {
