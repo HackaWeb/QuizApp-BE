@@ -26,6 +26,7 @@ builder.Services.AddOptions();
 builder.Services.AddLogging();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Configuration.AddEnvironmentVariables();
+builder.Services.AddSignalR();
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 {
