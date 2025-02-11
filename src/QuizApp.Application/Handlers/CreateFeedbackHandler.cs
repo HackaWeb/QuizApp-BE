@@ -20,7 +20,7 @@ public class CreateFeedbackHandler(
         var user = httpContextAccessor.HttpContext?.User;
         var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var quiz = _unitOfWork.QuizRepository.GetByIdAsync(request.QuizId);
+        var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(request.QuizId);
         if (quiz is null)
         {
             throw new DomainException("Quiz not found!", (int)HttpStatusCode.NotFound);
