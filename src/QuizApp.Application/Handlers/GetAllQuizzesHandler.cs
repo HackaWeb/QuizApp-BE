@@ -30,6 +30,8 @@ public class GetAllQuizzesHandler(
 
         var quizzes = domainQuizzes
             .Where(q => users.ContainsKey(q.OwnerId))
+            .Where(q => string.IsNullOrEmpty(request.titleFilter) || request.titleFilter.Length < 3 ||
+                        q.Title.Contains(request.titleFilter, StringComparison.OrdinalIgnoreCase)) 
             .Select(item =>
             {
                 var user = users[item.OwnerId];
@@ -61,7 +63,6 @@ public class GetAllQuizzesHandler(
 
         return new GetAllQuizzesResponse(quizzes);
     }
-
     private List<QuizModelWithOwner> SortQuizzes(List<QuizModelWithOwner> quizzes, SortType sortType)
     {
         return sortType switch

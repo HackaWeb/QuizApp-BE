@@ -2,8 +2,8 @@
 using QuizApp.Contracts.Rest.Responses;
 
 namespace QuizApp.Contracts.Rest.Requests;
-public record GetAllQuizzesRequest(SortType sortType) : IRequest<GetAllQuizzesResponse>;
 
+public record GetAllQuizzesRequest(SortType sortType, string? titleFilter = null) : IRequest<GetAllQuizzesResponse>;
 
 public enum SortType
 {
