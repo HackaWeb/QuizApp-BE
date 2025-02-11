@@ -15,20 +15,20 @@ namespace QuizApp.API.Controllers;
 public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPost("{userId}")]
-    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromRoute] string userId, [FromBody] GetQuizzesByUserRequest request)
+    [HttpGet("{userId}")]
+    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromRoute] string userId)
     {
         if (!Guid.TryParse(userId, out var userGuid))
         {
             throw new DomainException("Invalid user ID format.", (int)HttpStatusCode.BadRequest);
         }
 
-        var command = new GetQuizzesByUserIdCommand(userGuid, request.PageSize, request.PageNumber);
+        var command = new GetQuizzesByUserIdCommand(userGuid);
         var quizzes = await mediator.Send(command);
         return quizzes;
     }
 
-    [HttpPost("completed/{userId}")]
+    [HttpGet("completed/{userId}")]
     public async Task<List<QuizModel>> GetCompleteQuizzesByUser([FromRoute] string userId)
     {
 
@@ -119,5 +119,16 @@ public class QuizController(IMediator mediator) : ControllerBase
         var quiz = await mediator.Send(command);
 
         return quiz;
+    }
+
+    [HttpGet("/questions/{quizId}")]
+    public async Task<List<QuestionWithOptions>> GetQuizQuestions([FromRoute]string quizId)
+    {
+        if(!Guid.TryParse(quizId, out var parsedQuizId))
+        {
+            throw new DomainException("Invalid quiz ID format.", (int)HttpStatusCode.BadRequest);
+        }
+        var questions = await mediator.Send(new GetQuizQuestions(parsedQuizId));
+        return questions;
     }
 }

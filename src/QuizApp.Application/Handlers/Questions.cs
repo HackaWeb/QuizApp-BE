@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using QuizApp.Contracts.Rest.Models;
@@ -63,5 +64,22 @@ public class OverwriteQuestionsHandler(
 
         quiz.Questions = questions;
         await unitOfWork.SaveEntitiesAsync();
+    }
+}
+
+
+public class GetQuizQuestionsHandler(
+    IUnitOfWork unitOfWork,
+    IMapper mapper,
+    IHttpContextAccessor httpContextAccessor,
+    UserManager<User> userManager) : IRequestHandler<GetQuizQuestions, List<QuestionWithOptions>>
+{
+    public async Task<List<QuestionWithOptions>> Handle(GetQuizQuestions request, CancellationToken cancellationToken)
+    {
+        var quiz = await unitOfWork.QuizRepository.GetByIdAsync(request.quizId);
+
+        var questions = mapper.Map<List<QuestionWithOptions>>(quiz.Questions);
+
+        return questions;
     }
 }

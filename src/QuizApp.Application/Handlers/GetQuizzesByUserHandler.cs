@@ -18,8 +18,6 @@ public class GetQuizzesByUserHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
         var pagedItems = quizzes
             .Where(x => x.OwnerId == request.UserId)
-            .Skip((request.PageNumber - 1) * request.PageSize)
-            .Take(request.PageSize)
             .Select(q => new Quiz(
                 q.Id,
                 q.Title,
@@ -32,10 +30,7 @@ public class GetQuizzesByUserHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
         var response = new GetQuizzesByUserResponse
         {
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            TotalItems = quizzes.Count(),
-            Items = pagedItems
+            Quizzes = pagedItems
         };
 
         return response;

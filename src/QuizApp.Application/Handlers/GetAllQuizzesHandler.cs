@@ -22,6 +22,10 @@ public class GetAllQuizzesHandler(
         foreach (var item in domainQuizzes)
         {
             var user = await userManager.FindByIdAsync(item.OwnerId.ToString());
+            if (user is null)
+            {
+                continue;
+            }
             var quizDto = mapper.Map<QuizModelWithOwner>(item);
             var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
 
