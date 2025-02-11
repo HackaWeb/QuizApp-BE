@@ -6,11 +6,11 @@ using QuizApp.Infrastructure;
 
 namespace QuizApp.Application.Handlers;
 
-public class CreateQuestionHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<CreateQuestionRequest, QuestionDto>
+public class CreateQuestionHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<CreateQuestionRequest, Contracts.Rest.Models.QuestionDto>
 {
-    public async Task<QuestionDto> Handle(CreateQuestionRequest request, CancellationToken cancellationToken)
+    public async Task<Contracts.Rest.Models.QuestionDto> Handle(CreateQuestionRequest request, CancellationToken cancellationToken)
     {
-        var question = new Question
+        var question = new Domain.Models.Question
         {
             Id = request.QuestionId,
             QuizId = request.QuizId,
@@ -19,6 +19,6 @@ public class CreateQuestionHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRe
         };
 
         await unitOfWork.QuestionRepository.AddAsync(question);
-        return mapper.Map<QuestionDto>(question);
+        return mapper.Map<Contracts.Rest.Models.QuestionDto>(question);
     }
 }

@@ -2,7 +2,7 @@
 
 public class AnswerOption
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Title { get; set; }
     public bool IsCorrect { get; set; }
 
