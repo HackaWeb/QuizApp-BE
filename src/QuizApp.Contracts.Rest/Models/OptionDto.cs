@@ -15,6 +15,13 @@ public class UpdateOptionModel
     public bool? IsCorrect { get; set; }
 }
 
+public class OverwriteOptionsDto
+{
+    public string Title { get; set; } = string.Empty;
+    public bool IsCorrect { get; set; }
+    public Guid QuestionId { get; set; }
+}
+
 public record CreateOptionRequest(Guid QuestionId, string Title, bool IsCorrect) : IRequest<OptionDto>;
 public record UpdateOptionRequest(Guid OptionId, string? Title, bool? IsCorrect) : IRequest<OptionDto>;
 public record GetOptionRequest(Guid OptionId) : IRequest<OptionDto>;
