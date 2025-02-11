@@ -53,6 +53,7 @@ public class CreateQuizHandler(
                 Type = (QuestionType)item.Type,
                 ChoiceOptions = item.Options?.Select(o => new AnswerOption
                 {
+                    Id = o.Id,
                     Title = o.Title,
                     IsCorrect = o.IsCorrect
                 }).ToList()
