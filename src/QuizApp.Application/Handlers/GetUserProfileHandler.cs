@@ -35,8 +35,6 @@ public class GetUserProfileHandler(
             user.LastName,
             user.Email!,
             user.AvatarUrl,
-            (uint)quizzes.Count,
-            (uint)quizCount,
             isAdmin);
 
         return userProfile;

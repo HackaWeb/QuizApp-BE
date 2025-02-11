@@ -5,7 +5,5 @@ public record GetUserProfileResponse(
     string? LastName,
     string Email,
     string? Avatar,
-    uint FinishedQuizzes,
-    uint CreatedQuizzes,
     bool IsAdmin
     );
