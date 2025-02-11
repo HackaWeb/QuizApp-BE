@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
 using QuizApp.Infrastructure.Repositories;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace QuizApp.API.Hubs;
 
@@ -29,6 +33,7 @@ public class QuizTimerHub : Hub
         var tokenSource = new CancellationTokenSource();
 
         ActiveQuizzes[quizId] = (startTime, duration, tokenSource);
+
         _ = StopQuizAfterDelay(quizId, duration, tokenSource.Token);
 
         await Clients.All.SendAsync("QuizStarted", quizId, startTime, duration);
@@ -49,6 +54,54 @@ public class QuizTimerHub : Hub
         }
     }
 
+    public async Task SubmitAnswers(string quizId, Dictionary<Guid, Guid> userAnswers)
+    {
+        if (!ActiveQuizzes.TryGetValue(quizId, out var quizData))
+        {
+            await Clients.Caller.SendAsync("QuizNotFound", quizId);
+            return;
+        }
+
+        var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(Guid.Parse(quizId));
+        if (quiz == null)
+        {
+            await Clients.Caller.SendAsync("QuizNotFound", quizId);
+            return;
+        }
+
+        int correctAnswers = 0;
+        int totalQuestions = quiz.Questions.Count;
+
+        foreach (var question in quiz.Questions)
+        {
+            if (userAnswers.TryGetValue(question.Id, out var userAnswer))
+            {
+                var correctOption = question.ChoiceOptions.FirstOrDefault(o => o.IsCorrect);
+                if (correctOption != null && correctOption.Id == userAnswer)
+                {
+                    correctAnswers++;
+                }
+            }
+        }
+
+        double score = ((double)correctAnswers / totalQuestions) * 100;
+
+        var quizHistory = new QuizHistory
+        {
+            Id = Guid.NewGuid(),
+            FinishedAt = DateTime.Now,
+            QuizId = Guid.Parse(quizId),
+            StartedAt = DateTime.Now.AddMinutes(quiz.Duration),
+
+        };
+
+        await _unitOfWork.QuizHistoryRepository.AddAsync(quizHistory);
+
+        await Clients.Caller.SendAsync("QuizCompleted", quizId, correctAnswers, totalQuestions, score);
+
+        ActiveQuizzes.Remove(quizId, out _);
+    }
+
     private async Task StopQuizAfterDelay(string quizId, int duration, CancellationToken token)
     {
         try
@@ -62,7 +115,6 @@ public class QuizTimerHub : Hub
         }
         catch (TaskCanceledException)
         {
-            
         }
     }
 

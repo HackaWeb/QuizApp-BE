@@ -17,25 +17,41 @@ public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("{userId?}")]
-    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser(string? userId, [FromBody] GetQuizzesByUserRequest request)
+    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromRoute] string? userId, [FromBody] GetQuizzesByUserRequest request)
     {
-        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
+        {
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            throw new DomainException("Invalid user ID format.", (int)HttpStatusCode.BadRequest);
+        }
 
-        var command = new GetQuizzesByUserIdCommand(Guid.Parse(userId), request.PageSize, request.PageNumber);
+        var command = new GetQuizzesByUserIdCommand(userGuid, request.PageSize, request.PageNumber);
         var quizzes = await mediator.Send(command);
         return quizzes;
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("completed/{userId?}")]
-    public async Task<List<QuizModel>> GetCompleteQuizzesByUser(string? userId)
+    public async Task<List<QuizModel>> GetCompleteQuizzesByUser([FromRoute] string? userId)
     {
-        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
+        {
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
-        var command = new GetUserCompletedQuests(userId);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            throw new DomainException("Invalid user ID format.", (int)HttpStatusCode.BadRequest);
+        }
+
+        var command = new GetUserCompletedQuests(userGuid.ToString());
         var quizzes = await mediator.Send(command);
         return quizzes;
     }
+
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
