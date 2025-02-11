@@ -5,6 +5,6 @@ public record Quiz(
     string Title, 
     string? ImageUrl, 
     uint Duration, 
-    int PlayedTimes,
+    int TimesAttempted,
     ushort? Rate,
     ushort TaskCount);

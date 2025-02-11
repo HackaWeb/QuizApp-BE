@@ -6,8 +6,7 @@ using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Models.Quiz;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
-using QuizApp.Domain.Exceptions;
-using System.Net;
+using System.Security.Claims;
 
 namespace QuizApp.API.Controllers;
 
@@ -15,10 +14,13 @@ namespace QuizApp.API.Controllers;
 public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPost("{userId}")]
-    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromBody] GetQuizzesByUserRequest request)
+    [HttpPost("{userId?}")]
+    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser(string? userId, [FromBody] GetQuizzesByUserRequest request)
     {
-        var quizzes = await mediator.Send(request);
+        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var command = new GetQuizzesByUserIdCommand(Guid.Parse(userId), request.PageSize, request.PageNumber);
+        var quizzes = await mediator.Send(command);
         return quizzes;
     }
 
