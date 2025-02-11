@@ -37,6 +37,7 @@ public class GetQuizByIdHandler(
             .Where(x => x.OwnerId == user.Id)
             .Select(x => (double?)x.Rate)
             .Average() ?? 0;
+        quizDto.Owner = new OwnerDto();
 
         quizDto.Owner.Avatar = user.AvatarUrl;
         quizDto.Owner.FirstName = user.FirstName;
