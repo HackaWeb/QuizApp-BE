@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using QuizApp.Contracts.Rest.Models.Quiz;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
@@ -37,5 +39,24 @@ public class DeleteUserImageHandler(
         }
 
         await unitOfWork.SaveEntitiesAsync();
+    }
+}
+
+
+public class GetUserCompletedQuestsHandler(
+    IUnitOfWork unitOfWork,
+    UserManager<User> userManager,
+    IHttpContextAccessor httpContextAccessor,
+    IMapper mapper) : IRequestHandler<GetUserCompletedQuests, List<QuizModel>>
+{
+    public async Task<List<QuizModel>> Handle(GetUserCompletedQuests request, CancellationToken cancellationToken)
+    {
+        var quizHistory = await unitOfWork.QuizHistoryRepository.GetByUserIdAsync(Guid.Parse(request.UserId));
+        var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
+
+        var quizIds = quizHistory.Where(x => x.UserId == Guid.Parse(request.UserId)).Select(x => x.Quiz.Id);
+        var userQuiz = quizzes.Where(x => quizIds.Contains(x.Id));
+
+        return mapper.Map<List<QuizModel>>(userQuiz);
     }
 }

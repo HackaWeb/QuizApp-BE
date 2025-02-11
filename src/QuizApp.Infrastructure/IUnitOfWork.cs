@@ -9,7 +9,7 @@ public interface IUnitOfWork
 
     IOptionRepository OptionsRepository { get;  }
 
-    IRepository<QuizHistory> QuizHistoryRepository { get; }
+    IQuizHistoryRepository QuizHistoryRepository { get; }
 
     IQuizRepository QuizRepository { get; }
     
