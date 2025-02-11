@@ -14,5 +14,8 @@ public class QuizProfile : AutoMapper.Profile
         CreateMap<QuizApp.Domain.Models.Feedback, FeedbackModel>();
         CreateMap<QuizApp.Domain.Models.Quiz, QuizModelWithOwner>()
             .ForMember(x => x.Owner, src => src.Ignore());
+
+        CreateMap<QuizApp.Domain.Models.Question, QuestionWithOptions>();
+        CreateMap<QuizApp.Domain.Models.AnswerOption, AnonymousOptionDto>();
     }
 }
