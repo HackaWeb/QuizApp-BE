@@ -43,7 +43,7 @@ public class GetAllQuizzesHandler(
                     Id = item.Id,
                     Title = item.Title,
                     Description = item.Description,
-                    NumberOfPasses = item.PassCount,
+                    PassCount = item.PassCount,
                     Rate = item.Rate,
                     Owner = new OwnerDto
                     {
@@ -68,7 +68,7 @@ public class GetAllQuizzesHandler(
         return sortType switch
         {
             SortType.Rating => quizzes.OrderByDescending(q => q.Rate).ToList(),
-            SortType.NumberOfPasses => quizzes.OrderByDescending(q => q.NumberOfPasses).ToList(),
+            SortType.NumberOfPasses => quizzes.OrderByDescending(q => q.PassCount).ToList(),
             SortType.Alphabet => quizzes.OrderBy(q => q.Title).ToList(),
             SortType.AuthorRating => quizzes.OrderByDescending(q => q.Owner.Rate).ToList(),
             _ => quizzes
