@@ -2,4 +2,4 @@
 
 namespace QuizApp.Contracts.Rest.Responses;
 
-public record GetAllQuizzesResponse(List<QuizModel> quizzes);
+public record GetAllQuizzesResponse(List<QuizModelWithOwner> quizzes);
