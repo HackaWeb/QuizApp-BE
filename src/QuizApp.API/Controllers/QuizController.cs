@@ -97,4 +97,14 @@ public class QuizController(IMediator mediator) : ControllerBase
         var quizzes = await mediator.Send(new GetAllQuizzesRequest());
         return quizzes;
     }
+
+    [HttpGet("without-questions/{quizId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<QuizModel> GetQuizByIdWithouQuestions(string quizId)
+    {
+        var command = new GetQuizWithoutQuestionsCommand(Guid.Parse(quizId));
+        var quiz = await mediator.Send(command);
+
+        return quiz;
+    }
 }
