@@ -3,6 +3,7 @@
 public class QuizHistory
 {
     public Guid Id { get; set; } = Guid.NewGuid();
+    public double Score { get; set; }
     public DateTime StartedAt { get; set; }
     public DateTime FinishedAt { get; set; }
     public Guid UserId { get; set; }
