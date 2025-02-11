@@ -16,6 +16,7 @@ public class UploadQuestionMediaHandler(IUnitOfWork unitOfWork, IBlobStorageRepo
         var mediaUrl = await UploadMediaAsync(request.File);
 
         question.MediaUrl = mediaUrl;
+        await unitOfWork.SaveEntitiesAsync();
     }
 
     private async Task<string?> UploadMediaAsync(IFormFile? file)
