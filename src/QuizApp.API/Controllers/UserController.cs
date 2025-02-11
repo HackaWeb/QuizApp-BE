@@ -13,22 +13,39 @@ namespace QuizApp.API.Controllers;
 public class UserController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPut("user-profile")]
+    [HttpPut("user-profile/{userId?}")]
     [Consumes("multipart/form-data")]
-    public async Task<UpdateUserProfileResponse> UpdateUserProfile([FromForm] UpdateUserProfileRequest request)
+    public async Task<UpdateUserProfileResponse> UpdateUserProfile(string? userId, [FromForm] UpdateUserProfileRequest request)
     {
-        request.UserId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var updatedResult = await mediator.Send(request);
+        var command = new UpdateUserProfileCommand
+        {
+            UserId = userId,
+            FirstName = request.FirstName,
+            Avatar = request.Avatar,
+            Email = request.Email,
+            LastName = request.LastName,
+        };
+        var updatedResult = await mediator.Send(command);
         return updatedResult;
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("user-profile")]
-    public async Task<GetUserProfileResponse> GetUserProfile([FromQuery] string? userId)
+    public async Task<GetUserProfileResponse> GetUserProfile()
     {
-        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        var getUserProfileRequest = new GetUserProfileRequest(Guid.Parse(userId));
+        var userProfile = await mediator.Send(getUserProfileRequest);
+
+        return userProfile;
+    }
+
+    [HttpGet("user-profile/{userId:guid}")]
+    public async Task<GetUserProfileResponse> GetUserProfileById(Guid userId)
+    {
         var getUserProfileRequest = new GetUserProfileRequest(userId);
         var userProfile = await mediator.Send(getUserProfileRequest);
 
@@ -36,8 +53,8 @@ public class UserController(IMediator mediator) : ControllerBase
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpDelete("user-profile")]
-    public async Task<Result> DeleteUser([FromQuery] string? userId)
+    [HttpDelete("user-profile/{userId?}")]
+    public async Task<Result> DeleteUser(string? userId)
     {
         userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
 

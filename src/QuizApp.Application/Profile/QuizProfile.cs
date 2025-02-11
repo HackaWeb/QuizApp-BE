@@ -11,5 +11,6 @@ public class QuizProfile : AutoMapper.Profile
         CreateMap<QuizApp.Domain.Models.Question, QuestionModel>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (QuestionType)src.Type));
         CreateMap<QuizApp.Domain.Models.AnswerOption, AnswerOptionModel>();
+        CreateMap<QuizApp.Domain.Models.Feedback, FeedbackModel>();
     }
 }

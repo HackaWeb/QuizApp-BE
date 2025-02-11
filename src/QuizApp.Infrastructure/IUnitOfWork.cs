@@ -7,7 +7,7 @@ public interface IUnitOfWork
 {
     IQuestionRepository QuestionRepository { get; }
 
-    IRepository<AnswerOption> ChoiceOptions { get;  }
+    IOptionRepository OptionsRepository { get;  }
 
     IRepository<QuizHistory> QuizHistoryRepository { get; }
 

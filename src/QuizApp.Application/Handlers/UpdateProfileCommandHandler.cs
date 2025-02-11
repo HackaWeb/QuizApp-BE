@@ -13,9 +13,9 @@ namespace QuizApp.Application.Handlers;
 public class UpdateProfileCommandHandler(
     UserManager<User> userManager,
     IHttpContextAccessor httpContextAccessor,
-    IBlobStorageRepository blobRepository) : IRequestHandler<UpdateUserProfileRequest, UpdateUserProfileResponse>
+    IBlobStorageRepository blobRepository) : IRequestHandler<UpdateUserProfileCommand, UpdateUserProfileResponse>
 {
-    public async Task<UpdateUserProfileResponse> Handle(UpdateUserProfileRequest request, CancellationToken cancellationToken)
+    public async Task<UpdateUserProfileResponse> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
     {
         var currentUser = httpContextAccessor.HttpContext!.User;
         var currentUserId = userManager.GetUserId(currentUser);
