@@ -1,14 +1,15 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
+using QuizApp.Infrastructure;
 using System.Net;
 
 namespace QuizApp.Application.Handlers;
 
-public class DeleteUserProfileHandler(UserManager<User> userManager) : IRequestHandler<DeleteUserProfileRequest>
+public class DeleteUserProfileHandler(
+    UserManager<User> userManager, IUnitOfWork unitOfWork) : IRequestHandler<DeleteUserProfileRequest>
 {
     public async Task Handle(DeleteUserProfileRequest request, CancellationToken cancellationToken)
     {
@@ -24,5 +25,16 @@ public class DeleteUserProfileHandler(UserManager<User> userManager) : IRequestH
         {
             throw new DomainException("Failed to delete user.", (int)HttpStatusCode.BadRequest, deleteResult.Errors.ToDictionary(x => x.Code, x => x.Description));
         }
+
+        var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
+        var userQuizes = quizzes.Where(x => x.OwnerId == user.Id).ToList();
+
+
+        foreach (var item in userQuizes)
+        {
+            await unitOfWork.QuizRepository.DeleteAsync(item.Id);
+        }
+
+        await unitOfWork.SaveEntitiesAsync();
     }
 }

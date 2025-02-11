@@ -105,9 +105,9 @@ public class QuizController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<GetAllQuizzesResponse> GetAllQuizzes()
+    public async Task<GetAllQuizzesResponse> GetAllQuizzes([FromQuery]SortType sortType)
     {
-        var quizzes = await mediator.Send(new GetAllQuizzesRequest());
+        var quizzes = await mediator.Send(new GetAllQuizzesRequest(sortType));
         return quizzes;
     }
 
