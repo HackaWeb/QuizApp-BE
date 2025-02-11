@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using QuizApp.Contracts.Rest.Requests;
+using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
+using System.Net;
 using System.Security.Claims;
 
 namespace QuizApp.Application.Handlers;
@@ -17,6 +19,12 @@ public class CreateFeedbackHandler(
     {
         var user = httpContextAccessor.HttpContext?.User;
         var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var quiz = _unitOfWork.QuizRepository.GetByIdAsync(request.QuizId);
+        if (quiz is null)
+        {
+            throw new DomainException("Quiz not found!", (int)HttpStatusCode.NotFound);
+        }
 
         if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
         {
