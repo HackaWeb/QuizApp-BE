@@ -5,5 +5,7 @@ public record GetUserProfileResponse(
     string? LastName,
     string Email,
     string? Avatar,
-    bool IsAdmin
+    bool IsAdmin,
+    double UserRate,
+    string id
     );

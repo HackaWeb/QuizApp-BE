@@ -23,11 +23,13 @@ public class QuizAppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public DbSet<AnswerOption> AnswerOptions { get; set; }
     public DbSet<Feedback> Feedback { get; set; }
 
+    public DbSet<QuizHistory> QuizHistory { get; set; }
+
     public IRepository<Question> QuestionsRepository => new Repository<Question>(this);
 
     public IOptionRepository OptionsRepository => new OptionRepository(this);
 
-    public IRepository<QuizHistory> QuizHistoryRepository => new Repository<QuizHistory>(this);
+    public IQuizHistoryRepository QuizHistoryRepository => new QuizHistoryRepository(this);
 
     public IQuizRepository QuizRepository => new QuizRepository(this);
 

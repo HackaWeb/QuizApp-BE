@@ -24,6 +24,17 @@ public class QuizController(IMediator mediator) : ControllerBase
         return quizzes;
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("completed/{userId?}")]
+    public async Task<List<QuizModel>> GetCompleteQuizzesByUser(string? userId)
+    {
+        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var command = new GetUserCompletedQuests(userId);
+        var quizzes = await mediator.Send(command);
+        return quizzes;
+    }
+
     [HttpPost]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status200OK)]

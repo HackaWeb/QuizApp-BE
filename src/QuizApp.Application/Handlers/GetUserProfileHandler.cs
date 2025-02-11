@@ -6,6 +6,7 @@ using QuizApp.Contracts.Rest.Responses;
 using QuizApp.Domain.Exceptions;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
+using System.Linq;
 using System.Net;
 
 namespace QuizApp.Application.Handlers;
@@ -30,12 +31,19 @@ public class GetUserProfileHandler(
         var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
         var quizCount = quizzes.Count(x => x.OwnerId == Guid.Parse(currentUserId));
 
+        var userRate = quizzes
+            .Where(x => x.OwnerId == Guid.Parse(currentUserId))
+            .Select(x => (double?)x.Rate)
+            .Average() ?? 0;
+
         var userProfile = new GetUserProfileResponse(
             user.FirstName,
             user.LastName,
             user.Email!,
             user.AvatarUrl,
-            isAdmin);
+            isAdmin,
+            userRate,
+            currentUserId);
 
         return userProfile;
     }
