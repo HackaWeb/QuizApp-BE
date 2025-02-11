@@ -15,7 +15,7 @@ namespace QuizApp.API.Controllers;
 public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("/user/{userId}")]
+    [HttpGet("user/{userId}")]
     public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromRoute] string userId)
     {
         if (!Guid.TryParse(userId, out var userGuid))
@@ -121,7 +121,7 @@ public class QuizController(IMediator mediator) : ControllerBase
         return quiz;
     }
 
-    [HttpGet("/questions/{quizId}")]
+    [HttpGet("questions/{quizId}")]
     public async Task<List<QuestionWithOptions>> GetQuizQuestions([FromRoute]string quizId)
     {
         if(!Guid.TryParse(quizId, out var parsedQuizId))
