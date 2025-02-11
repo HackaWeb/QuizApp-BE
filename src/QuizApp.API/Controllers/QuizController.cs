@@ -6,6 +6,8 @@ using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Models.Quiz;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
+using QuizApp.Domain.Exceptions;
+using System.Net;
 using System.Security.Claims;
 
 namespace QuizApp.API.Controllers;
@@ -77,7 +79,12 @@ public class QuizController(IMediator mediator) : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<GetQuizByIdResponse> GetQuizById(string id)
     {
-        var request = new GetQuizByIdRequest(Guid.Parse(id));
+        if (!Guid.TryParse(id, out var quizId))
+        {
+            throw new DomainException("Quiz not found.", (int)HttpStatusCode.NotFound);
+        }
+
+        var request = new GetQuizByIdRequest(quizId);
         var quiz = await mediator.Send(request);
 
         return quiz;
