@@ -107,6 +107,13 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Security-Policy",
+        "default-src *; connect-src * wss://* https://*; script-src * 'unsafe-inline'; style-src * 'unsafe-inline';");
+    await next();
+});
+
 app.UseMiddleware<ExceptionMiddleware>();
 //app.UseMiddleware<RequestLoggingMiddleware>();
 
