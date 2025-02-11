@@ -1,6 +1,7 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuizApp.API.Hubs;
 using QuizApp.API.Middleware;
 using QuizApp.API.ServiceExtensions;
 using QuizApp.Application.Profile;
@@ -118,5 +119,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
+app.MapHub<QuizTimerHub>("/quizTimerHub");
 
 app.Run();

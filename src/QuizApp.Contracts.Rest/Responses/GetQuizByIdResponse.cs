@@ -2,6 +2,6 @@
 
 namespace QuizApp.Contracts.Rest.Responses;
 
-public record GetQuizByIdResponse(QuizModel quiz)
+public record GetQuizByIdResponse(QuizModelWithOwner quiz)
 {
 }

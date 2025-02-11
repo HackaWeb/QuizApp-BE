@@ -18,7 +18,10 @@ public class UserController(IMediator mediator) : ControllerBase
     [Consumes("multipart/form-data")]
     public async Task<UpdateUserProfileResponse> UpdateUserProfile(string? userId, [FromForm] UpdateUserProfileRequest request)
     {
-        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
+        {
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
         var command = new UpdateUserProfileCommand
         {
@@ -57,7 +60,10 @@ public class UserController(IMediator mediator) : ControllerBase
     [HttpDelete("user-profile/{userId?}")]
     public async Task<Result> DeleteUser(string? userId)
     {
-        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
+        {
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
         var deleteUserProfileRequest = new DeleteUserProfileRequest(userId!);
         await mediator.Send(deleteUserProfileRequest);
@@ -67,9 +73,12 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpDelete("user-profile/{userId?}/image")]
-    public async Task<Result> DeleteUserImage(string? userId)
+    public async Task<Result> DeleteUserImage([FromRoute] string? userId)
     {
-        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId) || userId == "{userId}")
+        {
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
         await mediator.Send(new DeleteUserImageCommand(userId));
 
         return Result.Success();

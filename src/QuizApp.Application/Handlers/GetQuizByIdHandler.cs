@@ -26,7 +26,25 @@ public class GetQuizByIdHandler(
             throw new DomainException("Quiz not found.",(int)HttpStatusCode.BadRequest);
         }
 
-        var quizDto = mapper.Map<QuizModel>(quiz);
+        var quizDto = mapper.Map<QuizModelWithOwner>(quiz);
+
+        var user = await userManager.FindByIdAsync(quiz.OwnerId.ToString());
+        var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+        var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
+
+        var userRate = quizzes
+            .Where(x => x.OwnerId == user.Id)
+            .Select(x => (double?)x.Rate)
+            .Average() ?? 0;
+
+        quizDto.Owner.Avatar = user.AvatarUrl;
+        quizDto.Owner.FirstName = user.FirstName;
+        quizDto.Owner.LastName = user.LastName;
+        quizDto.Owner.Id = user.Id.ToString();
+        quizDto.Owner.Email = user.Email;
+        quizDto.Owner.IsAdmin = isAdmin;
+        quizDto.Owner.Rate = userRate;
 
         return new GetQuizByIdResponse(quizDto);
     }

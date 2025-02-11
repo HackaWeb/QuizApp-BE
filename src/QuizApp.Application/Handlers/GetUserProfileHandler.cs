@@ -24,15 +24,13 @@ public class GetUserProfileHandler(
             throw new DomainException("User not found.", (int)HttpStatusCode.InternalServerError);
         }
 
-        var currentUser = httpContextAccessor.HttpContext!.User;
-        var currentUserId = userManager.GetUserId(currentUser);
-        var isAdmin = currentUser.IsInRole("Admin");
+        var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
 
         var quizzes = await unitOfWork.QuizRepository.GetAllAsync();
-        var quizCount = quizzes.Count(x => x.OwnerId == Guid.Parse(currentUserId));
+        var quizCount = quizzes.Count(x => x.OwnerId == request.UserId);
 
         var userRate = quizzes
-            .Where(x => x.OwnerId == Guid.Parse(currentUserId))
+            .Where(x => x.OwnerId == request.UserId)
             .Select(x => (double?)x.Rate)
             .Average() ?? 0;
 
@@ -43,7 +41,7 @@ public class GetUserProfileHandler(
             user.AvatarUrl,
             isAdmin,
             userRate,
-            currentUserId);
+            request.UserId.ToString());
 
         return userProfile;
     }

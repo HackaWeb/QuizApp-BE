@@ -12,5 +12,7 @@ public class QuizProfile : AutoMapper.Profile
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (QuestionType)src.Type));
         CreateMap<QuizApp.Domain.Models.AnswerOption, AnswerOptionModel>();
         CreateMap<QuizApp.Domain.Models.Feedback, FeedbackModel>();
+        CreateMap<QuizApp.Domain.Models.Quiz, QuizModelWithOwner>()
+            .ForMember(x => x.Owner, src => src.Ignore());
     }
 }
