@@ -1,14 +1,11 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using QuizApp.Contracts.Rest.Responses;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace QuizApp.Contracts.Rest.Requests;
 
-public record UpdateUserProfileRequest( 
-    string Email, 
-    string FirstName, 
-    string LastName) : IRequest<UpdateUserProfileResponse>
+public class UpdateUserProfileRequest
 {
-    public string? UserId { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Email { get; set; }
     public IFormFile? Avatar { get; init; }
 }

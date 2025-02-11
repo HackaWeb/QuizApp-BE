@@ -6,6 +6,8 @@ using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Models.Quiz;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
+using QuizApp.Domain.Exceptions;
+using System.Net;
 
 namespace QuizApp.API.Controllers;
 
@@ -14,7 +16,7 @@ public class QuizController(IMediator mediator) : ControllerBase
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("{userId}")]
-    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromBody]GetQuizzesByUserRequest request)
+    public async Task<GetQuizzesByUserResponse> GetQuizzesByUser([FromBody] GetQuizzesByUserRequest request)
     {
         var quizzes = await mediator.Send(request);
         return quizzes;
@@ -24,16 +26,27 @@ public class QuizController(IMediator mediator) : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<QuizModel> CreateQuiz([FromBody]CreateQuizRequest request)
+    public async Task<QuizModel> CreateQuiz([FromBody] CreateQuizRequest request)
     {
         var response = await mediator.Send(request);
         return response;
     }
 
+    [HttpPut("{quizId:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<QuizDto>> UpdateQuiz(Guid quizId, [FromBody]UpdateQuizModel model)
+    {
+        var request = new UpdateQuizRequest(quizId, model.Title, model.Description, model.Duration);
+        var result = await mediator.Send(request);
+        return Ok(result);
+    }
+
     [HttpPost("media/upload/{quizId}")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result> CreateQuizMedia([FromQuery]string quizId, IFormFile file)
+    public async Task<Result> CreateQuizMedia(string quizId, IFormFile file)
     {
         await mediator.Send(new UploadQuizFileRequest
         {
@@ -47,7 +60,7 @@ public class QuizController(IMediator mediator) : ControllerBase
     [HttpPost("media/question/upload/{questionId}")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result> CreateQuestionMedia([FromQuery]string questionId, IFormFile file)
+    public async Task<Result> CreateQuestionMedia(string questionId, IFormFile file)
     {
         await mediator.Send(new UploadQuestionMediaRequest
         {
@@ -58,9 +71,9 @@ public class QuizController(IMediator mediator) : ControllerBase
         return Result.Success();
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<GetQuizByIdResponse> GetQuizById([FromQuery] string id)
+    public async Task<GetQuizByIdResponse> GetQuizById(string id)
     {
         var request = new GetQuizByIdRequest(Guid.Parse(id));
         var quiz = await mediator.Send(request);
@@ -68,16 +81,15 @@ public class QuizController(IMediator mediator) : ControllerBase
         return quiz;
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result> DeleteQuiz([FromQuery] string quizId)
+    public async Task<Result> DeleteQuiz(string id)
     {
-        await mediator.Send(new DeleteQuizRequest(Guid.Parse(quizId)));
+        await mediator.Send(new DeleteQuizRequest(Guid.Parse(id)));
         return Result.Success();
     }
 
     [HttpGet]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<GetAllQuizzesResponse> GetAllQuizzes()
     {
         var quizzes = await mediator.Send(new GetAllQuizzesRequest());

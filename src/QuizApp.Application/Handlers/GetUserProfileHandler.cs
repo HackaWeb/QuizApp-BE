@@ -17,7 +17,7 @@ public class GetUserProfileHandler(
 {
     public async Task<GetUserProfileResponse> Handle(GetUserProfileRequest request, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(request.UserId!);
+        var user = await userManager.FindByIdAsync(request.UserId!.ToString());
         if (user is null)
         {
             throw new DomainException("User not found.", (int)HttpStatusCode.InternalServerError);
