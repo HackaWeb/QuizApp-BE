@@ -32,7 +32,7 @@ public class QuestionWithOptions
     public string Text { get; set; } = string.Empty;
     public QuestionType Type { get; set; }
     public Guid QuizId { get; set; }
-    List<AnonymousOptionDto> Options { get; set;}
+    public List<AnonymousOptionDto> Options { get; set;}
 }
 
 public class AnonymousOptionDto

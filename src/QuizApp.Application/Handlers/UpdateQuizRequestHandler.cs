@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using QuizApp.Contracts.Rest.Requests;
+using QuizApp.Domain.Exceptions;
 using QuizApp.Infrastructure;
 using QuizApp.Infrastructure.Repositories;
 
@@ -20,7 +21,7 @@ public class UpdateQuizHandler : IRequestHandler<UpdateQuizRequest, QuizDto>
     public async Task<QuizDto> Handle(UpdateQuizRequest request, CancellationToken cancellationToken)
     {
         var quiz = await _unitOfWork.QuizRepository.GetByIdAsync(request.QuizId);
-        if (quiz == null) throw new KeyNotFoundException($"Quiz {request.QuizId} not found");
+        if (quiz == null) throw new DomainException($"Quiz {request.QuizId} not found");
 
         if (!string.IsNullOrWhiteSpace(request.Title))
             quiz.Title = request.Title;
