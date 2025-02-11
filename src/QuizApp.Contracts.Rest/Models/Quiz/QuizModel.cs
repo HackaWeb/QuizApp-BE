@@ -39,7 +39,7 @@ public class QuizModelWithOwner
 
     public ushort? Rate { get; set; }
 
-    public uint PassCount { get; set; }
+    public uint NumberOfPasses { get; set; }
 
     public OwnerDto Owner { get; set; }
 

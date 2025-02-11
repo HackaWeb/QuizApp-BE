@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using QuizApp.Contracts.Rest.Models.Quiz;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
 using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
+using System.Linq;
 
 namespace QuizApp.Application.Handlers;
 
@@ -16,39 +18,60 @@ public class GetAllQuizzesHandler(
 {
     public async Task<GetAllQuizzesResponse> Handle(GetAllQuizzesRequest request, CancellationToken cancellationToken)
     {
-        var quizzes = new List<QuizModelWithOwner>();
         var domainQuizzes = await unitOfWork.QuizRepository.GetAllAsync();
 
-        foreach (var item in domainQuizzes)
-        {
-            var user = await userManager.FindByIdAsync(item.OwnerId.ToString());
-            if (user is null)
+        var ownerIds = domainQuizzes.Select(q => q.OwnerId.ToString()).Distinct();
+        var users = (await userManager.Users.Where(u => ownerIds.Contains(u.Id.ToString())).ToListAsync())
+            .ToDictionary(u => u.Id);
+
+        var userRatings = domainQuizzes
+            .GroupBy(q => q.OwnerId)
+            .ToDictionary(g => g.Key, g => g.Average(q => (double?)q.Rate) ?? 0);
+
+        var quizzes = domainQuizzes
+            .Where(q => users.ContainsKey(q.OwnerId))
+            .Select(item =>
             {
-                continue;
-            }
-            var quizDto = mapper.Map<QuizModelWithOwner>(item);
-            var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+                var user = users[item.OwnerId];
+                var isAdmin = userManager.IsInRoleAsync(user, "Admin").Result;
+                var userRate = userRatings.ContainsKey(item.OwnerId) ? userRatings[item.OwnerId] : 0;
 
-            quizDto.Owner = new OwnerDto();
+                return new QuizModelWithOwner
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    NumberOfPasses = item.PassCount,
+                    Rate = item.Rate,
+                    Owner = new OwnerDto
+                    {
+                        Avatar = user.AvatarUrl,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Id = user.Id.ToString(),
+                        Email = user.Email,
+                        IsAdmin = isAdmin,
+                        Rate = userRate
+                    }
+                };
+            })
+            .ToList();
 
-            var userRate = domainQuizzes
-                .Where(x => x.OwnerId == user.Id)
-                .Select(x => (double?)x.Rate)
-                .Average() ?? 0;
-                quizDto.Owner = new OwnerDto();
-
-            quizDto.Owner.Avatar = user.AvatarUrl;
-            quizDto.Owner.FirstName = user.FirstName;
-            quizDto.Owner.LastName = user.LastName;
-            quizDto.Owner.Id = user.Id.ToString();
-            quizDto.Owner.Email = user.Email;
-            quizDto.Owner.IsAdmin = isAdmin;
-            quizDto.Owner.Rate = userRate;
-
-            quizzes.Add(quizDto);
-        }
-        
+        quizzes = SortQuizzes(quizzes, request.sortType);
 
         return new GetAllQuizzesResponse(quizzes);
     }
+
+    private List<QuizModelWithOwner> SortQuizzes(List<QuizModelWithOwner> quizzes, SortType sortType)
+    {
+        return sortType switch
+        {
+            SortType.Rating => quizzes.OrderByDescending(q => q.Rate).ToList(),
+            SortType.NumberOfPasses => quizzes.OrderByDescending(q => q.NumberOfPasses).ToList(),
+            SortType.Alphabet => quizzes.OrderBy(q => q.Title).ToList(),
+            SortType.AuthorRating => quizzes.OrderByDescending(q => q.Owner.Rate).ToList(),
+            _ => quizzes
+        };
+    }
+
 }
