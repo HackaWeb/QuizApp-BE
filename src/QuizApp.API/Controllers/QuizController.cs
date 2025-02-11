@@ -32,17 +32,6 @@ public class QuizController(IMediator mediator) : ControllerBase
         return response;
     }
 
-    [HttpPut("{quizId:guid}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<QuizDto>> UpdateQuiz(Guid quizId, [FromBody]UpdateQuizModel model)
-    {
-        var request = new UpdateQuizRequest(quizId, model.Title, model.Description, model.Duration);
-        var result = await mediator.Send(request);
-        return Ok(result);
-    }
-
     [HttpPost("media/upload/{quizId}")]
     [Consumes("multipart/form-data")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -89,7 +78,7 @@ public class QuizController(IMediator mediator) : ControllerBase
         return Result.Success();
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<GetAllQuizzesResponse> GetAllQuizzes()
     {
         var quizzes = await mediator.Send(new GetAllQuizzesRequest());

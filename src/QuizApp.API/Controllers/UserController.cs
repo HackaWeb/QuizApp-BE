@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
+using QuizApp.Domain.Models;
 using System.Security.Claims;
 
 namespace QuizApp.API.Controllers;
@@ -60,6 +61,16 @@ public class UserController(IMediator mediator) : ControllerBase
 
         var deleteUserProfileRequest = new DeleteUserProfileRequest(userId!);
         await mediator.Send(deleteUserProfileRequest);
+
+        return Result.Success();
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpDelete("user-profile/{userId?}/image")]
+    public async Task<Result> DeleteUserImage(string? userId)
+    {
+        userId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await mediator.Send(new DeleteUserImageCommand(userId));
 
         return Result.Success();
     }
