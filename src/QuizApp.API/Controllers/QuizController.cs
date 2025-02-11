@@ -105,9 +105,14 @@ public class QuizController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<GetAllQuizzesResponse> GetAllQuizzes([FromQuery]SortType sortType)
+    public async Task<GetAllQuizzesResponse> GetAllQuizzes([FromQuery]SortType sortType, [FromQuery]string? titleFilter = null)
     {
-        var quizzes = await mediator.Send(new GetAllQuizzesRequest(sortType));
+        if (!string.IsNullOrEmpty(titleFilter) && titleFilter.Length < 3)
+        {
+            throw new DomainException("Title filter must be at least 3 characters long.", (int)HttpStatusCode.BadRequest);
+        }
+
+        var quizzes = await mediator.Send(new GetAllQuizzesRequest(sortType, titleFilter));
         return quizzes;
     }
 
