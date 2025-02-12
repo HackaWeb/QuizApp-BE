@@ -4,6 +4,7 @@ namespace QuizApp.Infrastructure.Repositories;
 
 public interface IFeedbackRepository
 {
+    Task<List<Feedback>> GetByQuizId(Guid quizId);
     Task<Feedback?> GetByIdAsync(Guid id);
     Task<List<Feedback>> GetByQuizIdAsync(Guid quizId);
     Task AddAsync(Feedback feedback);

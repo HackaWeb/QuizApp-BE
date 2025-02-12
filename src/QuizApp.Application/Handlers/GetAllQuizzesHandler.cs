@@ -54,7 +54,9 @@ public class GetAllQuizzesHandler(
                         Email = user.Email,
                         IsAdmin = isAdmin,
                         Rate = userRate
-                    }
+                    },
+                    Feedbacks = mapper.Map<List<FeedbackModel>>(item.Feedbacks),
+                    Questions = mapper.Map<List<QuestionModel>>(item.Questions)
                 };
             })
             .ToList();
