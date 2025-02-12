@@ -45,6 +45,7 @@ public class GetAllQuizzesHandler(
                     Description = item.Description,
                     PassCount = item.PassCount,
                     Rate = item.Rate,
+                    ImageUrl = item.ImageUrl,
                     Owner = new OwnerDto
                     {
                         Avatar = user.AvatarUrl,
