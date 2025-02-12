@@ -23,7 +23,7 @@ public class SubmitQuizHandler(IUnitOfWork unitOfWork, IHttpContextAccessor http
         int correctAnswers = 0;
         int totalQuestions = quiz.Questions.Count;
 
-        foreach (var userQuestion in request.anwers.UserAnswers)
+        foreach (var userQuestion in request.UserAnswers)
         {
             var matchingQuestion = quiz.Questions.FirstOrDefault(q => q.Id.ToString() == userQuestion.QuestionId);
             if (matchingQuestion == null) continue;
@@ -51,7 +51,8 @@ public class SubmitQuizHandler(IUnitOfWork unitOfWork, IHttpContextAccessor http
                 }
                 else if (!string.IsNullOrWhiteSpace(userAnswer.Text))
                 {
-                    return string.Equals(matchingQuestion.Text, userAnswer.Text, StringComparison.OrdinalIgnoreCase);
+                    var correctOptions = matchingQuestion.ChoiceOptions.Select(x => x.Title).ToList();
+                    return correctOptions.Contains(userAnswer.Text);
                 }
                 return false;
             });
@@ -70,9 +71,9 @@ public class SubmitQuizHandler(IUnitOfWork unitOfWork, IHttpContextAccessor http
         await unitOfWork.QuizHistoryRepository.AddAsync(new Domain.Models.QuizHistory
         {
             QuizId = request.quizId,
-            FinishedAt = DateTime.Now,
+            FinishedAt = DateTime.UtcNow,
             Score = score,
-            StartedAt = DateTime.Now.AddMinutes(-1 * quiz.Duration),
+            StartedAt = DateTime.UtcNow.AddMinutes(-1 * quiz.Duration),
             UserId = Guid.Parse(currentUserId)
         });
 

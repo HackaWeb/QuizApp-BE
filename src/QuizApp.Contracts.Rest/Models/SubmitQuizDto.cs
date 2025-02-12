@@ -3,11 +3,6 @@ using QuizApp.Contracts.Rest.Responses;
 
 namespace QuizApp.Contracts.Rest.Models;
 
-public class CheckQuizAnswersDto 
-{
-    public List<CheckQuestionAnswerDto> UserAnswers { get; set; } = new();
-}
-
 public class CheckQuestionAnswerDto
 {
     public string QuestionId { get; set; }
@@ -22,4 +17,4 @@ public class CheckAnswerOptionDto
 }
 
 
-public record SubmitQuiz(Guid quizId, CheckQuizAnswersDto anwers) : IRequest<CheckQuizAnswersResponse>;
+public record SubmitQuiz(Guid quizId, List<CheckQuestionAnswerDto> UserAnswers) : IRequest<CheckQuizAnswersResponse>;
