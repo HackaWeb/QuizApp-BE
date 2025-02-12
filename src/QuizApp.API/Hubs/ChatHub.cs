@@ -1,24 +1,29 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using QuizApp.Domain.Models;
 using System.Collections.Concurrent;
 
 namespace QuizApp.API.Hubs;
 
 public class ChatMessage
 {
-    public string UserId { get; set; } = string.Empty;
+    public string? NickName { get; set; } = null;
+    public string? AvatarUrl { get; set; } = null;
     public string Message { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; }
 }
 
-public class ChatHub : Hub
+public class ChatHub(UserManager<User> userManager) : Hub
 {
     private static readonly ConcurrentQueue<ChatMessage> ChatHistory = new();
 
     public async Task SendMessage(string userId, string message)
     {
+        var user = await userManager.FindByIdAsync(userId);
         var chatMessage = new ChatMessage
         {
-            UserId = userId,
+            NickName = $"{user.FirstName} {user.LastName}",
+            AvatarUrl = user.AvatarUrl,
             Message = message,
             Timestamp = DateTime.UtcNow
         };
