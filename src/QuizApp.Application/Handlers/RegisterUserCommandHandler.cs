@@ -29,7 +29,7 @@ public class RegisterUserCommandHandler(
             throw new DomainException(error.Description, (int)HttpStatusCode.BadRequest);
         }
 
-        await userManager.AddToRoleAsync(user, "Admin");
+        await userManager.AddToRoleAsync(user, "User");
 
         var roles = await userManager.GetRolesAsync(user);
         var token = jwtTokenService.GenerateToken(user, roles);
