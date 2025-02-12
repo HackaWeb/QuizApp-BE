@@ -21,5 +21,6 @@ public class QuizProfile : AutoMapper.Profile
             .ForMember(x => x.Options, src => src.MapFrom(x => x.ChoiceOptions));
         CreateMap<QuizApp.Domain.Models.AnswerOption, AnonymousOptionDto>();
         CreateMap<QuizApp.Domain.Models.User, UserDto>();
+        CreateMap<QuizApp.Domain.Models.Question, QuestionDto>();
     }
 }
