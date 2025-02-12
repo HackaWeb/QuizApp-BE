@@ -4,9 +4,9 @@ using QuizApp.Infrastructure;
 
 namespace QuizApp.Application.Handlers;
 
-public class CheckQuizAnswersHandler(IUnitOfWork unitOfWork) : IRequestHandler<CheckQuizAnswersRequest, CheckQuizAnswersResponse>
+public class CheckQuizAnswersHandler(IUnitOfWork unitOfWork) : IRequestHandler<CheckQuizAnswersRequest, CheckQuizAnswersResponseOutdated>
 {
-    public async Task<CheckQuizAnswersResponse> Handle(CheckQuizAnswersRequest request, CancellationToken cancellationToken)
+    public async Task<CheckQuizAnswersResponseOutdated> Handle(CheckQuizAnswersRequest request, CancellationToken cancellationToken)
     {
         var quiz = await unitOfWork.QuizRepository.GetByIdAsync(request.QuizId);
 
@@ -43,6 +43,6 @@ public class CheckQuizAnswersHandler(IUnitOfWork unitOfWork) : IRequestHandler<C
 
         double score = (totalQuestions > 0) ? ((double)correctAnswers / totalQuestions) * 100 : 0;
 
-        return new CheckQuizAnswersResponse(totalQuestions, correctAnswers, score, results);
+        return new CheckQuizAnswersResponseOutdated(totalQuestions, correctAnswers, score, results);
     }
 }

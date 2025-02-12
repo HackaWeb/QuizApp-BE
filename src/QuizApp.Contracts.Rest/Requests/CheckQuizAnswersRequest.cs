@@ -2,11 +2,11 @@
 
 namespace QuizApp.Contracts.Rest.Requests;
 
-public record CheckQuizAnswersRequest(Guid QuizId, List<UserAnswerModel> Answers) : IRequest<CheckQuizAnswersResponse>;
+public record CheckQuizAnswersRequest(Guid QuizId, List<UserAnswerModel> Answers) : IRequest<CheckQuizAnswersResponseOutdated>;
 
 public record UserAnswerModel(Guid QuestionId, List<Guid> SelectedOptionIds);
 
-public record CheckQuizAnswersResponse(
+public record CheckQuizAnswersResponseOutdated(
     int TotalQuestions,
     int CorrectAnswers,
     double Score,
