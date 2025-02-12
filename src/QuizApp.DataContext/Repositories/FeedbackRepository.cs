@@ -49,4 +49,9 @@ public class FeedbackRepository(QuizAppDbContext context) : IFeedbackRepository
         _context.Feedback.Remove(feedback);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<Feedback>> GetByQuizId(Guid quizId)
+    {
+        return await _context.Feedback.Where(x => x.QuizId == quizId).ToListAsync();
+    }
 }
