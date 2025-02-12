@@ -1,13 +1,16 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using QuizApp.Contracts.Rest.Models;
 using QuizApp.Contracts.Rest.Requests;
 using QuizApp.Contracts.Rest.Responses;
 using QuizApp.Domain.Exceptions;
+using QuizApp.Domain.Models;
 using QuizApp.Infrastructure;
 using System.Net;
 
 namespace QuizApp.Application.Handlers;
-public class SubmitQuizHandler(IUnitOfWork unitOfWork) : IRequestHandler<SubmitQuiz, CheckQuizAnswersResponse>
+public class SubmitQuizHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager) : IRequestHandler<SubmitQuiz, CheckQuizAnswersResponse>
 {
     public async Task<CheckQuizAnswersResponse> Handle(SubmitQuiz request, CancellationToken cancellationToken)
     {
@@ -60,6 +63,20 @@ public class SubmitQuizHandler(IUnitOfWork unitOfWork) : IRequestHandler<SubmitQ
         }
 
         double score = totalQuestions == 0 ? 0 : ((double)correctAnswers / totalQuestions) * 100;
+
+        var currentUser = httpContextAccessor.HttpContext!.User;
+        var currentUserId = userManager.GetUserId(currentUser);
+
+        await unitOfWork.QuizHistoryRepository.AddAsync(new Domain.Models.QuizHistory
+        {
+            QuizId = request.quizId,
+            FinishedAt = DateTime.Now,
+            Score = score,
+            StartedAt = DateTime.Now.AddMinutes(-1 * quiz.Duration),
+            UserId = Guid.Parse(currentUserId)
+        });
+
+        await unitOfWork.SaveEntitiesAsync();
 
         return new CheckQuizAnswersResponse
         {
