@@ -25,10 +25,11 @@ public class RegisterUserCommandHandler(
         var identityResult = await userManager.CreateAsync(user, request.Password);
         if (!identityResult.Succeeded)
         {
-            throw new DomainException("Error during registration.", (int)HttpStatusCode.BadRequest);
+            var error = identityResult.Errors.FirstOrDefault();
+            throw new DomainException(error.Description, (int)HttpStatusCode.BadRequest);
         }
 
-        await userManager.AddToRoleAsync(user, "User");
+        await userManager.AddToRoleAsync(user, "Admin");
 
         var roles = await userManager.GetRolesAsync(user);
         var token = jwtTokenService.GenerateToken(user, roles);
