@@ -32,8 +32,6 @@ public class OverwriteQuestionsHandler(
             throw new DomainException("You do not have permission to edit this profile.", (int)HttpStatusCode.Unauthorized);
         }
 
-        quiz.Questions.Clear();
-
         var questions = new List<Question>();
 
         foreach (var item in request.questions)
@@ -60,9 +58,14 @@ public class OverwriteQuestionsHandler(
                     });
                 }
             }
+
+            questions.Add(question);
         }
 
+        await unitOfWork.QuizRepository.DeleteAsync(quiz.Id);
+
         quiz.Questions = questions;
+        await unitOfWork.QuizRepository.AddAsync(quiz);
         await unitOfWork.SaveEntitiesAsync();
     }
 }
