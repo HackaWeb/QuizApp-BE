@@ -21,6 +21,7 @@ public class GetQuizByIdHandler(
     public async Task<GetQuizByIdResponse> Handle(GetQuizByIdRequest request, CancellationToken cancellationToken)
     {
         var quiz = await unitOfWork.QuizRepository.GetByIdAsync(request.id);
+
         if (quiz is null)
         {
             throw new DomainException("Quiz not found.",(int)HttpStatusCode.BadRequest);
@@ -47,6 +48,10 @@ public class GetQuizByIdHandler(
         quizDto.Owner.IsAdmin = isAdmin;
         quizDto.Owner.Rate = userRate;
 
-        return new GetQuizByIdResponse(quizDto);
+        var response = new GetQuizByIdResponse(quizDto);
+
+        quiz.PassCount = quiz.PassCount + 1;
+        await unitOfWork.SaveEntitiesAsync();
+        return response;
     }
 }

@@ -145,7 +145,7 @@ public class QuizController(IMediator mediator) : ControllerBase
 
     [HttpPost("submit/{quizId:guid}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<CheckQuizAnswersResponse> SubmitQuiz([FromRoute]Guid quizId, [FromBody]CheckQuizAnswersDto request)
+    public async Task<CheckQuizAnswersResponse> SubmitQuiz([FromRoute]Guid quizId, [FromBody]List<CheckQuestionAnswerDto> request)
     {
         var command = new SubmitQuiz(quizId, request);
         var result = await mediator.Send(command);
