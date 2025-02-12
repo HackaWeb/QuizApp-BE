@@ -25,7 +25,7 @@ public class RegisterUserCommandHandler(
         var identityResult = await userManager.CreateAsync(user, request.Password);
         if (!identityResult.Succeeded)
         {
-            throw new DomainException("Error during registration.", (int)HttpStatusCode.BadRequest, identityResult.Errors.ToDictionary(x => x.Code, x => x.Description));
+            throw new DomainException("Error during registration.", (int)HttpStatusCode.BadRequest);
         }
 
         await userManager.AddToRoleAsync(user, "User");
